@@ -1,0 +1,45 @@
+version = 2
+
+[[package]]
+name = "abla-postgres"
+provider = "git"
+identity = "github:AndreBaltazar8/abla-postgres"
+source = "https://github.com/AndreBaltazar8/abla-postgres.git"
+selector-kind = "head"
+selector = "HEAD"
+revision = "d44dc6900fb080a5c0cdf61cedf6575e8e9b48be"
+digest = "ae5e203ec11a9fbca6840be3f492ccad8dfaba53"
+entry = "src/postgres.ab"
+
+[[package]]
+name = "abla-redis"
+provider = "git"
+identity = "github:AndreBaltazar8/abla-redis"
+source = "https://github.com/AndreBaltazar8/abla-redis.git"
+selector-kind = "head"
+selector = "HEAD"
+revision = "4f8617760e6ba5c9f748f5ac055959a1d0a968b6"
+digest = "eea5b65c214765cd0d1f30483a8ae88eb100b929"
+entry = "src/redis.ab"
+
+[[package]]
+name = "abla-nats"
+provider = "git"
+identity = "github:AndreBaltazar8/abla-nats"
+source = "https://github.com/AndreBaltazar8/abla-nats.git"
+selector-kind = "head"
+selector = "HEAD"
+revision = "0ea97523c5897b3d76ed65d5b0262e4b94332193"
+digest = "da4597d0e8d7dc2999f2e193e0ddc684a7bcfa50"
+entry = "src/nats.ab"
+
+[[package]]
+name = "abla-web"
+provider = "git"
+identity = "github:AndreBaltazar8/abla-web"
+source = "https://github.com/AndreBaltazar8/abla-web.git"
+selector-kind = "head"
+selector = "HEAD"
+revision = "05488d9723e876fa4eed299c39bad3f855003d2e"
+digest = "f956d25a9b1620c329020764aff5caa18da4a33a"
+entry = "src/abla-web.ab"

@@ -1,0 +1,40 @@
+import github("AndreBaltazar8/abla-web")
+import "abla/http/event"
+import "abla/memory"
+import "abla/process/arguments"
+
+fun plaintext(context: WebContext): HttpResponse = httpText("hello, world!\n")
+
+fun benchmarkPort(): int {
+    var port = 18080
+    if (processArgumentCount() > 1) {
+        val parsed = httpDecimalLength(processArgument(1), 65535)
+        if (parsed > 0) port = parsed
+    }
+    port
+}
+
+fun main: int {
+    // Long-running services explicitly select Abla's managed collector. Pure
+    // short-lived programs that never touch this API omit the collector.
+    memorySetLimit(memoryLimit())
+    val app = webApp()
+    app.get("/plaintext", plaintext)
+    val handleRequest = { request: HttpRequest -> webDispatch(app, request) }
+    val options = HttpEventServerOptions(
+        4096,
+        16384,
+        1024,
+        1048576,
+        1000000,
+        30000,
+        4096,
+        5000
+    )
+    val server = httpEventServerHandler(
+        handleRequest,
+        ipv4Loopback(benchmarkPort()),
+        options
+    )
+    server.run()
+}
