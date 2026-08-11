@@ -81,8 +81,10 @@ single-worker harness. The subsequent
 [native scalar direct-call ABI](results/2026-08-11-i9-13900k-scalar-abi.md)
 reached 111,030 requests/second, 68.1% of Go and 39.9% of Rust. The subsequent
 [checked whole-request region](results/2026-08-11-i9-13900k-noescape-region.md)
-reached 144,573 requests/second, 89.2% of Go and 52.3% of Rust. The four-worker
-result (measured before the region pass) is in
+reached 144,573 requests/second, 89.2% of Go and 52.3% of Rust. The subsequent
+[lazy scalar SSA pass](results/2026-08-11-i9-13900k-lazy-scalar-ssa.md) reached
+152,868 requests/second, 95.5% of Go and 55.2% of Rust. The four-worker result
+(measured before the region and scalar SSA passes) is in
 [`results/2026-08-11-i9-13900k-parallel.md`](results/2026-08-11-i9-13900k-parallel.md):
 Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
 same four server CPUs. This remains an engineering baseline rather than a claim
