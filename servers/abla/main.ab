@@ -7,8 +7,8 @@ fun plaintext(context: WebContext): HttpResponse = httpText("hello, world!\n")
 
 fun benchmarkPort(): int {
     var port = 18080
-    if (processArgumentCount() > 1) {
-        val parsed = httpDecimalLength(processArgument(1), 65535)
+    if (processArgumentCount() > 0) {
+        val parsed = httpDecimalLength(processArgument(0), 65535)
         if (parsed > 0) port = parsed
     }
     port
