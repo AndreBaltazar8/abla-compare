@@ -3,7 +3,11 @@ import "abla/http/event"
 import "abla/memory"
 import "abla/process/arguments"
 
-fun plaintext(context: WebContext): HttpResponse = httpText("hello, world!\n")
+noescape fun plaintext(context: WebContext): HttpResponse =
+    httpText("hello, world!\n")
+
+noescape fun handleBenchmarkRequest(request: HttpRequest): HttpResponse =
+    webNoEscapeRoute(request, "GET", "/plaintext", plaintext)
 
 fun benchmarkPort(): int {
     var port = 18080
@@ -21,9 +25,6 @@ fun main: int {
     // Long-running services explicitly select Abla's managed collector. Pure
     // short-lived programs that never touch this API omit the collector.
     memorySetLimit(memoryLimit())
-    val app = webApp()
-    app.get("/plaintext", plaintext)
-    val handleRequest = { request: HttpRequest -> webDispatch(app, request) }
     val options = HttpEventServerOptions(
         4096,
         16384,
@@ -34,8 +35,8 @@ fun main: int {
         4096,
         5000
     )
-    val server = httpEventServerHandler(
-        handleRequest,
+    val server = httpEventServerNoEscapeHandler(
+        handleBenchmarkRequest,
         ipv4Loopback(benchmarkPort()),
         options,
         benchmarkReusePort()
