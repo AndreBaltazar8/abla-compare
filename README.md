@@ -70,7 +70,10 @@ The original broken baseline is recorded in
 optimized result and sustained-memory verification are in
 [`results/2026-08-11-i9-13900k.md`](results/2026-08-11-i9-13900k.md). Abla moved
 from 4.7 to 103,428 single-worker requests/second after the later response-arena
-pass and remained bounded during sustained load. The four-worker result is in
+pass and remained bounded during sustained load. The subsequent
+[gnet-informed event-loop and routing pass](results/2026-08-11-i9-13900k-gnet-review.md)
+reached 109,657 requests/second, 67.2% of Go and 39.4% of Rust in the same
+single-worker harness. The four-worker result is in
 [`results/2026-08-11-i9-13900k-parallel.md`](results/2026-08-11-i9-13900k-parallel.md):
 Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
 same four server CPUs. This remains an engineering baseline rather than a claim
