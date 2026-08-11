@@ -60,6 +60,8 @@ Moving collector pressure into the allocator was rejected because collection
 could occur while a runtime helper was constructing an unrooted intermediate.
 Moving the existing pressure call to every allocating IR instruction preserved
 correctness but regressed the isolated median to 159,909 requests/second
-(-1.60%). Both experiments were fully removed. A future pressure optimization
-needs a genuinely cheaper threshold or budget fast path rather than relocating
-the current call.
+(-1.60%). Splitting reserve and collection work into a cold helper also failed
+to overcome the weak-linked wrapper call, measuring 160,471 requests/second.
+All three experiments were fully removed. A future pressure optimization needs
+a backend-emitted threshold or budget fast path rather than relocating or
+wrapping the current call.
