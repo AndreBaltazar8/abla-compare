@@ -86,7 +86,10 @@ reached 144,573 requests/second, 89.2% of Go and 52.3% of Rust. The subsequent
 152,868 requests/second, 95.5% of Go and 55.2% of Rust. The subsequent
 [compact dynamic-value ABI](results/2026-08-11-i9-13900k-compact-values.md)
 reduced values from 40 to 32 bytes and reached 162,515 requests/second on an
-explicitly selected quiet P-core: 99.3% of Go and 58.4% of Rust. The four-worker result
+explicitly selected quiet P-core: 99.3% of Go and 58.4% of Rust. Typed string
+and array operations then reached
+[175,820 requests/second](results/2026-08-11-i9-13900k-typed-collections.md),
+107.2% of Go and 63.0% of Rust. The four-worker result
 (measured before the region and scalar SSA passes) is in
 [`results/2026-08-11-i9-13900k-parallel.md`](results/2026-08-11-i9-13900k-parallel.md):
 Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
