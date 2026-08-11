@@ -1,0 +1,70 @@
+import github("AndreBaltazar8/abla-web")
+import "abla/http/event"
+import "abla/io"
+import "abla/memory"
+
+fun diagnosticPlaintext(context: WebContext): HttpResponse =
+    httpText("hello, world!\n")
+
+fun parseRequests(raw: string, iterations: int): int {
+    var checksum = 0
+    var index = 0
+    while (index < iterations) {
+        val request = httpParseRequest(raw)
+        checksum = checksum + request.method.size + request.path.size +
+            request.headers.size
+        index = index + 1
+    }
+    checksum
+}
+
+fun dispatchRequests(app: WebApp, raw: string, iterations: int): int {
+    var checksum = 0
+    var index = 0
+    while (index < iterations) {
+        val request = httpParseRequest(raw)
+        val response = webDispatch(app, request)
+        checksum = checksum + response.status + response.body.size
+        index = index + 1
+    }
+    checksum
+}
+
+fun frameRequests(app: WebApp, raw: string, iterations: int): int {
+    var checksum = 0
+    var index = 0
+    while (index < iterations) {
+        val request = httpParseRequest(raw)
+        val response = webDispatch(app, request)
+        val framed = httpEventResponse(request, response, true, 4096)
+        checksum = checksum + framed.size
+        index = index + 1
+    }
+    checksum
+}
+
+fun report(label: string, before: int, checksum: int): void {
+    val peak = memoryLiveBytes()
+    val freed = memoryCollect()
+    val after = memoryLiveBytes()
+    println("$label checksum=$checksum allocated=${peak - before} freed=$freed live=$after")
+    return
+}
+
+fun main: int {
+    memorySetLimit(memoryLimit())
+    val raw = "GET /plaintext HTTP/1.1\r\nHost: localhost\r\nConnection: keep-alive\r\nUser-Agent: abla-diagnostic\r\nAccept: */*\r\n\r\n"
+    val app = webApp()
+    app.get("/plaintext", diagnosticPlaintext)
+    memoryCollect()
+
+    val parseBefore = memoryLiveBytes()
+    report("parse", parseBefore, parseRequests(raw, 1000))
+
+    val dispatchBefore = memoryLiveBytes()
+    report("dispatch", dispatchBefore, dispatchRequests(app, raw, 1000))
+
+    val frameBefore = memoryLiveBytes()
+    report("frame", frameBefore, frameRequests(app, raw, 1000))
+    0
+}

@@ -53,12 +53,16 @@ different compiler and `OHA` to use a specific load-generator binary.
 - `servers/abla`: Abla Web and the Abla event HTTP server
 - `servers/go`: Go standard-library HTTP server
 - `servers/rust`: Axum on Tokio
+- `diagnostics/http_pipeline_memory.ab`: allocation accounting for parse,
+  dispatch, and response-framing stages
 - `benchmark.py`: build, validation, CPU isolation, measurements, and JSON output
 
 ## Current baseline
 
-The first controlled run is recorded in
-[`results/2026-08-10-i9-13900k.md`](results/2026-08-10-i9-13900k.md). It found
-that the present Abla managed-memory HTTP path is not yet competitive or ready
-for sustained high-throughput service work. The committed benchmark is meant to
-turn that limitation into a measurable optimization target.
+The original broken baseline is recorded in
+[`results/2026-08-10-i9-13900k.md`](results/2026-08-10-i9-13900k.md). The
+optimized result and sustained-memory verification are in
+[`results/2026-08-11-i9-13900k.md`](results/2026-08-11-i9-13900k.md). Abla moved
+from 4.7 to 41,511 requests/second and remained bounded during the two-minute
+soak. It is still behind the mature Go and Rust servers, so this remains an
+engineering baseline rather than a claim of parity.
