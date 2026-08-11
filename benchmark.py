@@ -112,23 +112,39 @@ def affinity(cpus: set[int]) -> Callable[[], None] | None:
     return apply
 
 
-def default_cpu_sets() -> tuple[set[int], set[int]]:
+def cpu_siblings(cpu: int, available: set[int]) -> set[int]:
+    sibling_list = Path(
+        f"/sys/devices/system/cpu/cpu{cpu}/topology/thread_siblings_list"
+    )
+    if sibling_list.exists():
+        return parse_cpu_list(sibling_list.read_text().strip()) & available
+    return {cpu}
+
+
+def default_cpu_sets(server_cpu_count: int) -> tuple[set[int], set[int]]:
     if not hasattr(os, "sched_getaffinity"):
         return set(), set()
     available = set(os.sched_getaffinity(0))
     if len(available) < 2:
         return set(), set()
-    server_cpu = min(available)
-    siblings = {server_cpu}
-    sibling_list = Path(
-        f"/sys/devices/system/cpu/cpu{server_cpu}/topology/thread_siblings_list"
-    )
-    if sibling_list.exists():
-        siblings = parse_cpu_list(sibling_list.read_text().strip()) & available
-    client_cpus = available - siblings
+    server_cpus: set[int] = set()
+    reserved_siblings: set[int] = set()
+    for cpu in sorted(available):
+        if len(server_cpus) >= server_cpu_count:
+            break
+        if cpu not in reserved_siblings:
+            server_cpus.add(cpu)
+            reserved_siblings |= cpu_siblings(cpu, available)
+    if len(server_cpus) < server_cpu_count:
+        for cpu in sorted(available - server_cpus):
+            if len(server_cpus) >= server_cpu_count:
+                break
+            server_cpus.add(cpu)
+            reserved_siblings |= cpu_siblings(cpu, available)
+    client_cpus = available - reserved_siblings
     if not client_cpus:
-        client_cpus = available - {server_cpu}
-    return {server_cpu}, client_cpus
+        client_cpus = available - server_cpus
+    return server_cpus, client_cpus
 
 
 def find_oha() -> str:
@@ -141,13 +157,17 @@ def find_oha() -> str:
     return executable
 
 
-def wait_until_ready(port: int, process: subprocess.Popen[bytes]) -> None:
+def wait_until_ready(port: int, processes: list[subprocess.Popen[bytes]]) -> None:
     endpoint = f"http://127.0.0.1:{port}/plaintext"
     deadline = time.monotonic() + 10
     last_error: Exception | None = None
     while time.monotonic() < deadline:
-        if process.poll() is not None:
-            raise RuntimeError(f"server exited during startup with status {process.returncode}")
+        for process in processes:
+            if process.poll() is not None:
+                raise RuntimeError(
+                    "server worker exited during startup with status "
+                    f"{process.returncode}"
+                )
         try:
             with urllib.request.urlopen(endpoint, timeout=0.5) as response:
                 body = response.read()
@@ -165,15 +185,43 @@ def wait_until_ready(port: int, process: subprocess.Popen[bytes]) -> None:
     raise RuntimeError(f"server did not become ready: {last_error}")
 
 
-def stop_server(process: subprocess.Popen[bytes]) -> None:
-    if process.poll() is not None:
-        return
-    process.send_signal(signal.SIGTERM)
-    try:
-        process.wait(timeout=3)
-    except subprocess.TimeoutExpired:
-        process.kill()
-        process.wait(timeout=3)
+def stop_servers(processes: list[subprocess.Popen[bytes]]) -> None:
+    for process in processes:
+        if process.poll() is None:
+            process.send_signal(signal.SIGTERM)
+    deadline = time.monotonic() + 3
+    for process in processes:
+        if process.poll() is not None:
+            continue
+        try:
+            process.wait(timeout=max(0.01, deadline - time.monotonic()))
+        except subprocess.TimeoutExpired:
+            process.kill()
+    for process in processes:
+        if process.poll() is None:
+            process.wait(timeout=3)
+
+
+def start_servers(
+    server: Server,
+    port: int,
+    workers: int,
+    server_cpus: set[int],
+) -> list[subprocess.Popen[bytes]]:
+    count = workers if server.name == "abla" else 1
+    command = [str(server.executable), str(port)]
+    if server.name == "abla" and count > 1:
+        command.append("--reuse-port")
+    return [
+        subprocess.Popen(
+            command,
+            cwd=ROOT,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
+            preexec_fn=affinity(server_cpus),
+        )
+        for _ in range(count)
+    ]
 
 
 def oha_run(
@@ -240,7 +288,7 @@ def machine_metadata() -> dict[str, Any]:
 def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]:
     executable = find_oha()
     port = args.port
-    default_server_cpus, default_client_cpus = default_cpu_sets()
+    default_server_cpus, default_client_cpus = default_cpu_sets(args.workers)
     server_cpus = (
         parse_cpu_list(args.server_cpus)
         if args.server_cpus
@@ -264,6 +312,8 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             "measurement_seconds": args.duration,
             "connections": args.connections,
             "repetitions": args.repetitions,
+            "abla_process_workers": args.workers,
+            "go_rust_worker_model": "one process with runtime-managed threads",
             "server_cpus": sorted(server_cpus),
             "client_cpus": sorted(client_cpus),
         },
@@ -273,15 +323,9 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
 
     for server in servers:
         print(f"\n== {server.name}: validation and warm-up ==", flush=True)
-        process = subprocess.Popen(
-            [str(server.executable), str(port)],
-            cwd=ROOT,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.PIPE,
-            preexec_fn=affinity(server_cpus),
-        )
+        processes = start_servers(server, port, args.workers, server_cpus)
         try:
-            wait_until_ready(port, process)
+            wait_until_ready(port, processes)
             warmup = oha_run(executable, port, args.warmup, args.connections, client_cpus)
             if warmup["summary"]["successRate"] != 1.0:
                 raise RuntimeError(f"{server.name} warm-up had request failures")
@@ -301,7 +345,7 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
                     flush=True,
                 )
         finally:
-            stop_server(process)
+            stop_servers(processes)
 
         rates = [sample["summary"]["requestsPerSec"] for sample in samples]
         p50s = [sample["latencyPercentiles"]["p50"] for sample in samples]
@@ -339,8 +383,14 @@ def main() -> int:
     parser.add_argument("--duration", type=int, default=10)
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument(
+        "--workers",
+        type=int,
+        default=1,
+        help="Abla SO_REUSEPORT worker processes and default server CPU count",
+    )
+    parser.add_argument(
         "--server-cpus",
-        help="Linux CPU list for the server (default: one available physical CPU)",
+        help="Linux CPU list for the server (default: --workers physical CPUs)",
     )
     parser.add_argument(
         "--client-cpus",
@@ -351,7 +401,13 @@ def main() -> int:
 
     if args.build_only and args.skip_build:
         parser.error("--build-only and --skip-build cannot be combined")
-    if min(args.connections, args.warmup, args.duration, args.repetitions) <= 0:
+    if min(
+        args.connections,
+        args.warmup,
+        args.duration,
+        args.repetitions,
+        args.workers,
+    ) <= 0:
         parser.error("connections, durations, and repetitions must be positive")
 
     servers = build_servers() if not args.skip_build else [

@@ -14,6 +14,9 @@ fun benchmarkPort(): int {
     port
 }
 
+fun benchmarkReusePort(): bool =
+    processArgumentCount() > 1 && processArgument(1) == "--reuse-port"
+
 fun main: int {
     // Long-running services explicitly select Abla's managed collector. Pure
     // short-lived programs that never touch this API omit the collector.
@@ -34,7 +37,8 @@ fun main: int {
     val server = httpEventServerHandler(
         handleRequest,
         ipv4Loopback(benchmarkPort()),
-        options
+        options,
+        benchmarkReusePort()
     )
     server.run()
 }

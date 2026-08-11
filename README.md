@@ -18,7 +18,8 @@ calls, TLS, JSON, logging, and application work require separate benchmarks.
 
 The harness builds release binaries, verifies every response, warms each server,
 then runs three timed measurements with the same `oha` client settings. On Linux
-it pins the server to one CPU and the load generator to separate CPUs.
+it pins the server to isolated physical CPUs and the load generator to the
+remaining CPUs.
 
 ```sh
 nix-shell -p oha --run 'python3 benchmark.py'
@@ -29,6 +30,7 @@ Raw results are written to `results/latest.json` (ignored by Git). Useful knobs:
 ```sh
 python3 benchmark.py --connections 64 --duration 10 --repetitions 3
 python3 benchmark.py --skip-build --server-cpus 2 --client-cpus 8-31
+python3 benchmark.py --workers 4 --connections 256
 ```
 
 The defaults assume this repository is beside `../ablac`. Set `ABLAC` to use a
@@ -43,8 +45,12 @@ different compiler and `OHA` to use a specific load-generator binary.
 - The Abla service calls `memorySetLimit(memoryLimit())`, which selects its
   managed collector and automatic memory-pressure safe points. Abla otherwise
   strips the collector for short-lived programs that do not use the memory API.
-- The primary result is single-CPU throughput. Go and Rust can scale over more
-  worker threads; Abla's current event server is single-threaded.
+- The default result is single-CPU throughput. `--workers N` starts N independent
+  Abla event loops on the same port with Linux `SO_REUSEPORT`, while Go and Rust
+  use one process and their runtime-managed worker threads on the same N-CPU
+  affinity set. Separate Abla processes preserve independent collectors and
+  failure boundaries; this harness does not pretend the current shared-heap
+  `thread` collector is safe for permanent allocating server workers.
 - Server order is fixed, so rerun the suite and inspect the individual samples
   before treating small differences as meaningful.
 
@@ -63,6 +69,9 @@ The original broken baseline is recorded in
 [`results/2026-08-10-i9-13900k.md`](results/2026-08-10-i9-13900k.md). The
 optimized result and sustained-memory verification are in
 [`results/2026-08-11-i9-13900k.md`](results/2026-08-11-i9-13900k.md). Abla moved
-from 4.7 to 41,511 requests/second and remained bounded during the two-minute
-soak. It is still behind the mature Go and Rust servers, so this remains an
-engineering baseline rather than a claim of parity.
+from 4.7 to 103,428 single-worker requests/second after the later response-arena
+pass and remained bounded during sustained load. The four-worker result is in
+[`results/2026-08-11-i9-13900k-parallel.md`](results/2026-08-11-i9-13900k-parallel.md):
+Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
+same four server CPUs. This remains an engineering baseline rather than a claim
+of parity.
