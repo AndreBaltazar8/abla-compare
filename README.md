@@ -47,8 +47,9 @@ different compiler and `OHA` to use a specific load-generator binary.
   strips the collector for short-lived programs that do not use the memory API.
 - The static benchmark route uses Abla Web's checked `noescape` path. The event
   server reclaims parsing, routing, and response-framing temporaries together at
-  the end of each request, while promoting only the response bytes and unread
-  connection tail that survive the request.
+  the end of each request. It writes completed small responses before resetting
+  the request region, and promotes only an unwritten backpressured response tail
+  and unread connection tail that must survive the request.
 - The default result is single-CPU throughput. `--workers N` starts N independent
   Abla event loops on the same port with Linux `SO_REUSEPORT`, while Go and Rust
   use one process and their runtime-managed worker threads on the same N-CPU
@@ -89,7 +90,10 @@ reduced values from 40 to 32 bytes and reached 162,515 requests/second on an
 explicitly selected quiet P-core: 99.3% of Go and 58.4% of Rust. Typed string
 and array operations then reached
 [175,820 requests/second](results/2026-08-11-i9-13900k-typed-collections.md),
-107.2% of Go and 63.0% of Rust. The four-worker result
+107.2% of Go and 63.0% of Rust. Checked field indexing, direct region writes,
+and further native scalar propagation then reached
+[220,714 requests/second](results/2026-08-12-i9-13900k-220k.md), 134.6% of Go
+and 78.3% of Rust in the same single-core harness. The four-worker result
 (measured before the region and scalar SSA passes) is in
 [`results/2026-08-11-i9-13900k-parallel.md`](results/2026-08-11-i9-13900k-parallel.md):
 Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
