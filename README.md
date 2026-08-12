@@ -48,9 +48,10 @@ different compiler and `OHA` to use a specific load-generator binary.
 - The Abla service calls `memorySetLimit(memoryLimit())`, which selects its
   managed collector and automatic memory-pressure safe points. Abla otherwise
   strips the collector for short-lived programs that do not use the memory API.
-- Plaintext, parameters, and body routes use Abla Web's checked `noescape` path.
-  The authenticated context workload uses the normal middleware dispatcher and
-  typed request locals. The event
+- Application handlers and middleware are ordinary functions and lambdas. The
+  compiler proves non-retention when they cross the request-scoped API boundary;
+  application code does not need `noescape` declarations. The authenticated
+  context workload uses request-scoped middleware and typed request locals. The event
   server reclaims parsing, routing, and response-framing temporaries together at
   the end of each request. It writes completed small responses before resetting
   the request region, and promotes only an unwritten backpressured response tail
@@ -111,3 +112,8 @@ plaintext result while exposing the next bottlenecks: Abla reaches 175,919
 requests/second for path plus query parameters, 65,355 for bearer middleware
 plus request locals, and 41,331 for a 16 KiB binary echo. The scenarios are
 deliberately reported separately rather than blended into one score.
+The current
+[inferred non-retention matrix](results/2026-08-12-inferred-noescape.md) removes
+all explicit `noescape` declarations from the benchmark application and beats
+Go in every measured workload: 218,886 plaintext, 179,657 parameters, 191,089
+authenticated context, and 117,544 16 KiB body requests/second.

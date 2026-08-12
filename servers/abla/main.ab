@@ -3,20 +3,20 @@ import "abla/http/event"
 import "abla/memory"
 import "abla/process/arguments"
 
-noescape fun plaintext(context: WebContext): HttpResponse =
+fun plaintext(context: WebContext): HttpResponse =
     httpText("hello, world!\n")
 
-noescape fun handlePlaintext(request: HttpRequest): HttpResponse =
+fun handlePlaintext(request: HttpRequest): HttpResponse =
     webNoEscapeRoute(request, "GET", "/plaintext", plaintext)
 
-noescape fun parameters(context: WebContext): HttpResponse {
+fun parameters(context: WebContext): HttpResponse {
     val account = context.parameter("account")
     val item = context.parameter("item")
     val filter = context.parameter("filter")
     httpText("$account:$item:$filter\n")
 }
 
-noescape fun handleParameters(request: HttpRequest): HttpResponse =
+fun handleParameters(request: HttpRequest): HttpResponse =
     webNoEscapeRoute(
         request,
         "GET",
@@ -24,16 +24,18 @@ noescape fun handleParameters(request: HttpRequest): HttpResponse =
         parameters
     )
 
-noescape fun echoBody(context: WebContext): HttpResponse = HttpResponse(
+fun echoBody(context: WebContext): HttpResponse = HttpResponse(
     200,
     [HttpHeader("Content-Type", "application/octet-stream")],
     context.request.body
 )
 
-noescape fun handleBody(request: HttpRequest): HttpResponse =
+fun handleBody(request: HttpRequest): HttpResponse =
     webNoEscapeRoute(request, "POST", "/body", echoBody)
 
-fun benchmarkAuthenticate(token: string): WebAuthResult = WebAuthResult(
+fun benchmarkAuthenticate(
+    token: string
+): WebAuthResult = WebAuthResult(
     token == "benchmark-token",
     "user-7",
     "invalid benchmark token",
@@ -43,7 +45,9 @@ fun benchmarkAuthenticate(token: string): WebAuthResult = WebAuthResult(
     )
 )
 
-fun authenticatedContext(context: WebContext): HttpResponse {
+fun benchmarkContextResponse(
+    context: WebContext
+): HttpResponse {
     val principal = context.local("principal")
     val user = context.jsonLocal("user")
     val name = user.getString("name")
@@ -83,12 +87,11 @@ fun main: int {
         5000
     )
     if (scenario == "context") {
-        val app = webApp()
-        app.use(webBearerAuth(benchmarkAuthenticate))
-        app.get("/context", authenticatedContext)
-        val handle = { request: HttpRequest -> webDispatch(app, request) }
-        val server = httpEventServerHandler(
-            handle,
+        val app = webScopedApp()
+        app.use(webScopedBearerAuth(benchmarkAuthenticate))
+        app.get("/context", benchmarkContextResponse)
+        val server = httpEventServerNoEscapeHandler(
+            { request: HttpRequest -> webScopedDispatch(app, request) },
             ipv4Loopback(benchmarkPort()),
             options,
             benchmarkReusePort()
