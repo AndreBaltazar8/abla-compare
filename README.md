@@ -117,3 +117,7 @@ The current
 all explicit `noescape` declarations from the benchmark application and beats
 Go in every measured workload: 218,886 plaintext, 179,657 parameters, 191,089
 authenticated context, and 117,544 16 KiB body requests/second.
+The follow-up
+[segmented 16 KiB body result](results/2026-08-12-body-scatter.md) profiles that
+body ceiling and records the validated direct-receive and scatter-write gain
+without changing the small-response path.
