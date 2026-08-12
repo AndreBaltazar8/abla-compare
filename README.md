@@ -1,18 +1,19 @@
 # Abla, Go, and Rust HTTP comparison
 
-This repository measures the same small routed HTTP/1.1 service implemented
-with Abla Web, Go `net/http`, and Rust Axum. Each server exposes:
+This repository measures the same routed HTTP/1.1 workloads implemented with
+Abla Web, Go `net/http`, and Rust Axum. The scenario matrix includes:
 
 ```text
-GET /plaintext
-Content-Type: text/plain; charset=utf-8
-
-hello, world!
+plaintext   GET  /plaintext
+parameters  GET  /accounts/:account/items/:item?filter=active
+context     GET  /context with bearer auth and a request-local user
+body-16k    POST /body with a 16 KiB binary body echoed in the response
 ```
 
 The goal is a repeatable engineering baseline, not a universal language
-ranking. It measures a practical router and HTTP stack on one machine. Database
-calls, TLS, JSON, logging, and application work require separate benchmarks.
+ranking. Each workload is reported separately so an allocation-heavy middleware
+path cannot be hidden by a fast plaintext average. Database calls, TLS, logging,
+and other application work still require separate benchmarks.
 
 ## Run it
 
@@ -28,7 +29,8 @@ nix-shell -p oha --run 'python3 benchmark.py'
 Raw results are written to `results/latest.json` (ignored by Git). Useful knobs:
 
 ```sh
-python3 benchmark.py --connections 64 --duration 10 --repetitions 3
+python3 benchmark.py --scenario all --connections 64 --duration 10 --repetitions 3
+python3 benchmark.py --scenario context
 python3 benchmark.py --skip-build --server-cpus 2 --client-cpus 8-31
 python3 benchmark.py --workers 4 --connections 256
 ```
@@ -38,14 +40,17 @@ different compiler and `OHA` to use a specific load-generator binary.
 
 ## Fairness notes
 
-- All servers use one routed `GET` endpoint and an identical 14-byte body.
+- All servers expose byte-for-byte equivalent responses for every scenario;
+  the harness validates them before load generation.
 - All measurements use HTTP/1.1 keep-alive and 64 concurrent connections.
 - Release builds are used: Abla's production optimization pipeline, stripped Go,
   and Rust `--release` with thin LTO.
 - The Abla service calls `memorySetLimit(memoryLimit())`, which selects its
   managed collector and automatic memory-pressure safe points. Abla otherwise
   strips the collector for short-lived programs that do not use the memory API.
-- The static benchmark route uses Abla Web's checked `noescape` path. The event
+- Plaintext, parameters, and body routes use Abla Web's checked `noescape` path.
+  The authenticated context workload uses the normal middleware dispatcher and
+  typed request locals. The event
   server reclaims parsing, routing, and response-framing temporaries together at
   the end of each request. It writes completed small responses before resetting
   the request region, and promotes only an unwritten backpressured response tail
@@ -99,3 +104,10 @@ and 78.3% of Rust in the same single-core harness. The four-worker result
 Abla reached 396,714 requests/second, about 80% of Go and 44% of Rust on the
 same four server CPUs. This remains an engineering baseline rather than a claim
 of parity.
+
+The newer
+[holistic workload matrix](results/2026-08-12-i9-13900k-holistic.md) keeps that
+plaintext result while exposing the next bottlenecks: Abla reaches 175,919
+requests/second for path plus query parameters, 65,355 for bearer middleware
+plus request locals, and 41,331 for a 16 KiB binary echo. The scenarios are
+deliberately reported separately rather than blended into one score.

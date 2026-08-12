@@ -6,8 +6,50 @@ import "abla/process/arguments"
 noescape fun plaintext(context: WebContext): HttpResponse =
     httpText("hello, world!\n")
 
-noescape fun handleBenchmarkRequest(request: HttpRequest): HttpResponse =
+noescape fun handlePlaintext(request: HttpRequest): HttpResponse =
     webNoEscapeRoute(request, "GET", "/plaintext", plaintext)
+
+noescape fun parameters(context: WebContext): HttpResponse {
+    val account = context.parameter("account")
+    val item = context.parameter("item")
+    val filter = context.parameter("filter")
+    httpText("$account:$item:$filter\n")
+}
+
+noescape fun handleParameters(request: HttpRequest): HttpResponse =
+    webNoEscapeRoute(
+        request,
+        "GET",
+        "/accounts/:account/items/:item",
+        parameters
+    )
+
+noescape fun echoBody(context: WebContext): HttpResponse = HttpResponse(
+    200,
+    [HttpHeader("Content-Type", "application/octet-stream")],
+    context.request.body
+)
+
+noescape fun handleBody(request: HttpRequest): HttpResponse =
+    webNoEscapeRoute(request, "POST", "/body", echoBody)
+
+fun benchmarkAuthenticate(token: string): WebAuthResult = WebAuthResult(
+    token == "benchmark-token",
+    "user-7",
+    "invalid benchmark token",
+    jsonObject(
+        ["id", "name", "tier"],
+        [jsonString("user-7"), jsonString("Andre"), jsonString("gold")]
+    )
+)
+
+fun authenticatedContext(context: WebContext): HttpResponse {
+    val principal = context.local("principal")
+    val user = context.jsonLocal("user")
+    val name = user.getString("name")
+    val tier = user.getString("tier")
+    httpText("$principal:$name:$tier\n")
+}
 
 fun benchmarkPort(): int {
     var port = 18080
@@ -19,27 +61,62 @@ fun benchmarkPort(): int {
 }
 
 fun benchmarkReusePort(): bool =
-    processArgumentCount() > 1 && processArgument(1) == "--reuse-port"
+    processArgumentCount() > 2 && processArgument(2) == "--reuse-port"
+
+fun benchmarkScenario(): string =
+    if (processArgumentCount() > 1) processArgument(1) else "plaintext"
 
 fun main: int {
     // Long-running services explicitly select Abla's managed collector. Pure
     // short-lived programs that never touch this API omit the collector.
     memorySetLimit(memoryLimit())
+    val scenario = benchmarkScenario()
+    val maximumBody = if (scenario == "body-16k") 65536 else 1024
     val options = HttpEventServerOptions(
         4096,
         16384,
-        1024,
+        maximumBody,
         1048576,
         1000000,
         30000,
         4096,
         5000
     )
-    val server = httpEventServerNoEscapeHandler(
-        handleBenchmarkRequest,
-        ipv4Loopback(benchmarkPort()),
-        options,
-        benchmarkReusePort()
-    )
-    server.run()
+    if (scenario == "context") {
+        val app = webApp()
+        app.use(webBearerAuth(benchmarkAuthenticate))
+        app.get("/context", authenticatedContext)
+        val handle = { request: HttpRequest -> webDispatch(app, request) }
+        val server = httpEventServerHandler(
+            handle,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    } else if (scenario == "parameters") {
+        val server = httpEventServerNoEscapeHandler(
+            handleParameters,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    } else if (scenario == "body-16k") {
+        val server = httpEventServerNoEscapeHandler(
+            handleBody,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    } else {
+        val server = httpEventServerNoEscapeHandler(
+            handlePlaintext,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    }
 }

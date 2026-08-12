@@ -23,7 +23,47 @@ from typing import Any, Callable
 
 ROOT = Path(__file__).resolve().parent
 BUILD = ROOT / "build"
-EXPECTED_BODY = b"hello, world!\n"
+BODY_16K_PATH = BUILD / "body-16k.bin"
+
+
+@dataclass(frozen=True)
+class Scenario:
+    name: str
+    method: str
+    target: str
+    expected_body: bytes
+    headers: tuple[str, ...] = ()
+    body_path: Path | None = None
+
+
+BODY_16K = bytes(range(256)) * 64
+SCENARIOS = {
+    scenario.name: scenario
+    for scenario in (
+        Scenario("plaintext", "GET", "/plaintext", b"hello, world!\n"),
+        Scenario(
+            "parameters",
+            "GET",
+            "/accounts/acct-42/items/item-7?filter=active",
+            b"acct-42:item-7:active\n",
+        ),
+        Scenario(
+            "context",
+            "GET",
+            "/context",
+            b"user-7:Andre:gold\n",
+            ("Authorization: Bearer benchmark-token",),
+        ),
+        Scenario(
+            "body-16k",
+            "POST",
+            "/body",
+            BODY_16K,
+            ("Content-Type: application/octet-stream",),
+            BODY_16K_PATH,
+        ),
+    )
+}
 
 
 @dataclass(frozen=True)
@@ -56,6 +96,7 @@ def compiler_path() -> Path:
 
 def build_servers() -> list[Server]:
     BUILD.mkdir(exist_ok=True)
+    BODY_16K_PATH.write_bytes(BODY_16K)
     compiler = compiler_path()
     if not compiler.exists():
         raise SystemExit(f"Abla compiler not found at {compiler}; set ABLAC to override")
@@ -157,8 +198,24 @@ def find_oha() -> str:
     return executable
 
 
-def wait_until_ready(port: int, processes: list[subprocess.Popen[bytes]]) -> None:
-    endpoint = f"http://127.0.0.1:{port}/plaintext"
+def request_for_scenario(port: int, scenario: Scenario) -> urllib.request.Request:
+    data = scenario.expected_body if scenario.body_path is not None else None
+    headers = dict(header.split(": ", 1) for header in scenario.headers)
+    if data is not None:
+        headers["Content-Length"] = str(len(data))
+    return urllib.request.Request(
+        f"http://127.0.0.1:{port}{scenario.target}",
+        data=data,
+        headers=headers,
+        method=scenario.method,
+    )
+
+
+def wait_until_ready(
+    port: int,
+    processes: list[subprocess.Popen[bytes]],
+    scenario: Scenario,
+) -> None:
     deadline = time.monotonic() + 10
     last_error: Exception | None = None
     while time.monotonic() < deadline:
@@ -169,14 +226,21 @@ def wait_until_ready(port: int, processes: list[subprocess.Popen[bytes]]) -> Non
                     f"{process.returncode}"
                 )
         try:
-            with urllib.request.urlopen(endpoint, timeout=0.5) as response:
+            with urllib.request.urlopen(
+                request_for_scenario(port, scenario), timeout=0.5
+            ) as response:
                 body = response.read()
                 content_type = response.headers.get_content_type()
-                if response.status != 200 or body != EXPECTED_BODY:
+                if response.status != 200 or body != scenario.expected_body:
                     raise RuntimeError(
                         f"unexpected response: status={response.status}, body={body!r}"
                     )
-                if content_type != "text/plain":
+                expected_type = (
+                    "application/octet-stream"
+                    if scenario.name == "body-16k"
+                    else "text/plain"
+                )
+                if content_type != expected_type:
                     raise RuntimeError(f"unexpected content type: {content_type}")
                 return
         except (OSError, urllib.error.URLError) as error:
@@ -204,12 +268,15 @@ def stop_servers(processes: list[subprocess.Popen[bytes]]) -> None:
 
 def start_servers(
     server: Server,
+    scenario: Scenario,
     port: int,
     workers: int,
     server_cpus: set[int],
 ) -> list[subprocess.Popen[bytes]]:
     count = workers if server.name == "abla" else 1
     command = [str(server.executable), str(port)]
+    if server.name == "abla":
+        command.append(scenario.name)
     if server.name == "abla" and count > 1:
         command.append("--reuse-port")
     return [
@@ -230,6 +297,7 @@ def oha_run(
     duration: int,
     connections: int,
     client_cpus: set[int],
+    scenario: Scenario,
 ) -> dict[str, Any]:
     command = [
         executable,
@@ -238,13 +306,21 @@ def oha_run(
         "json",
         "--http-version",
         "1.1",
+        "--disable-compression",
         "--wait-ongoing-requests-after-deadline",
+        "--stats-success-breakdown",
         "-z",
         f"{duration}s",
         "-c",
         str(connections),
-        f"http://127.0.0.1:{port}/plaintext",
     ]
+    if scenario.method != "GET":
+        command.extend(["--method", scenario.method])
+    for header_value in scenario.headers:
+        command.extend(["-H", header_value])
+    if scenario.body_path is not None:
+        command.extend(["-D", str(scenario.body_path)])
+    command.append(f"http://127.0.0.1:{port}{scenario.target}")
     completed = subprocess.run(
         command,
         cwd=ROOT,
@@ -302,12 +378,16 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
     if server_cpus & client_cpus:
         raise SystemExit("server and client CPU sets must not overlap")
 
+    selected_scenarios = (
+        list(SCENARIOS.values())
+        if args.scenario == "all"
+        else [SCENARIOS[args.scenario]]
+    )
     result: dict[str, Any] = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "configuration": {
-            "endpoint": "/plaintext",
+            "scenarios": [scenario.name for scenario in selected_scenarios],
             "protocol": "HTTP/1.1 with keep-alive",
-            "response_body_bytes": len(EXPECTED_BODY),
             "warmup_seconds": args.warmup,
             "measurement_seconds": args.duration,
             "connections": args.connections,
@@ -318,44 +398,78 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             "client_cpus": sorted(client_cpus),
         },
         "machine": machine_metadata(),
-        "servers": {},
+        "scenarios": {},
     }
 
-    for server in servers:
-        print(f"\n== {server.name}: validation and warm-up ==", flush=True)
-        processes = start_servers(server, port, args.workers, server_cpus)
-        try:
-            wait_until_ready(port, processes)
-            warmup = oha_run(executable, port, args.warmup, args.connections, client_cpus)
-            if warmup["summary"]["successRate"] != 1.0:
-                raise RuntimeError(f"{server.name} warm-up had request failures")
-            samples: list[dict[str, Any]] = []
-            for repetition in range(1, args.repetitions + 1):
-                sample = oha_run(
-                    executable, port, args.duration, args.connections, client_cpus
-                )
-                if sample["summary"]["successRate"] != 1.0:
-                    raise RuntimeError(f"{server.name} repetition {repetition} had failures")
-                samples.append(sample)
-                print(
-                    f"{server.name} {repetition}/{args.repetitions}: "
-                    f"{sample['summary']['requestsPerSec']:.0f} req/s, "
-                    f"p50 {sample['latencyPercentiles']['p50'] * 1000:.3f} ms, "
-                    f"p99 {sample['latencyPercentiles']['p99'] * 1000:.3f} ms",
-                    flush=True,
-                )
-        finally:
-            stop_servers(processes)
-
-        rates = [sample["summary"]["requestsPerSec"] for sample in samples]
-        p50s = [sample["latencyPercentiles"]["p50"] for sample in samples]
-        p99s = [sample["latencyPercentiles"]["p99"] for sample in samples]
-        result["servers"][server.name] = {
-            "median_requests_per_second": statistics.median(rates),
-            "median_p50_seconds": statistics.median(p50s),
-            "median_p99_seconds": statistics.median(p99s),
-            "samples": samples,
+    for scenario in selected_scenarios:
+        scenario_result: dict[str, Any] = {
+            "method": scenario.method,
+            "target": scenario.target,
+            "request_body_bytes": (
+                len(scenario.expected_body) if scenario.body_path is not None else 0
+            ),
+            "response_body_bytes": len(scenario.expected_body),
+            "servers": {},
         }
+        result["scenarios"][scenario.name] = scenario_result
+        for server in servers:
+            print(
+                f"\n== {scenario.name} / {server.name}: validation and warm-up ==",
+                flush=True,
+            )
+            processes = start_servers(
+                server, scenario, port, args.workers, server_cpus
+            )
+            try:
+                wait_until_ready(port, processes, scenario)
+                warmup = oha_run(
+                    executable,
+                    port,
+                    args.warmup,
+                    args.connections,
+                    client_cpus,
+                    scenario,
+                )
+                if warmup["summary"]["successRate"] != 1.0:
+                    raise RuntimeError(
+                        f"{scenario.name}/{server.name} warm-up had request failures"
+                    )
+                samples: list[dict[str, Any]] = []
+                for repetition in range(1, args.repetitions + 1):
+                    sample = oha_run(
+                        executable,
+                        port,
+                        args.duration,
+                        args.connections,
+                        client_cpus,
+                        scenario,
+                    )
+                    if sample["summary"]["successRate"] != 1.0:
+                        raise RuntimeError(
+                            f"{scenario.name}/{server.name} repetition "
+                            f"{repetition} had failures"
+                        )
+                    samples.append(sample)
+                    print(
+                        f"{scenario.name}/{server.name} "
+                        f"{repetition}/{args.repetitions}: "
+                        f"{sample['summary']['requestsPerSec']:.0f} req/s, "
+                        f"p50 {sample['latencyPercentiles']['p50'] * 1000:.3f} ms, "
+                        f"p99 {sample['latencyPercentiles']['p99'] * 1000:.3f} ms",
+                        flush=True,
+                    )
+            finally:
+                stop_servers(processes)
+
+            rates = [sample["summary"]["requestsPerSec"] for sample in samples]
+            p50s = [sample["latencyPercentiles"]["p50"] for sample in samples]
+            p99s = [sample["latencyPercentiles"]["p99"] for sample in samples]
+            scenario_result["servers"][server.name] = {
+                "median_requests_per_second": statistics.median(rates),
+                "median_p50_seconds": statistics.median(p50s),
+                "median_p99_seconds": statistics.median(p99s),
+                "samples": samples,
+            }
     return result
 
 
@@ -363,14 +477,16 @@ def write_results(result: dict[str, Any], destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(result, indent=2) + "\n")
     print(f"\nWrote raw results to {destination}")
-    print("\nserver   median req/s   median p50   median p99")
-    print("------   ------------   ----------   ----------")
-    for name, server in result["servers"].items():
-        print(
-            f"{name:<8} {server['median_requests_per_second']:>12.0f}   "
-            f"{server['median_p50_seconds'] * 1000:>8.3f} ms   "
-            f"{server['median_p99_seconds'] * 1000:>8.3f} ms"
-        )
+    print("\nscenario     server   median req/s   median p50   median p99")
+    print("------------ -------- ------------   ----------   ----------")
+    for scenario_name, scenario in result["scenarios"].items():
+        for server_name, server in scenario["servers"].items():
+            print(
+                f"{scenario_name:<12} {server_name:<8} "
+                f"{server['median_requests_per_second']:>12.0f}   "
+                f"{server['median_p50_seconds'] * 1000:>8.3f} ms   "
+                f"{server['median_p99_seconds'] * 1000:>8.3f} ms"
+            )
 
 
 def main() -> int:
@@ -382,6 +498,12 @@ def main() -> int:
     parser.add_argument("--warmup", type=int, default=3)
     parser.add_argument("--duration", type=int, default=10)
     parser.add_argument("--repetitions", type=int, default=3)
+    parser.add_argument(
+        "--scenario",
+        choices=["all", *SCENARIOS],
+        default="all",
+        help="benchmark one workload or the complete scenario matrix",
+    )
     parser.add_argument(
         "--workers",
         type=int,
