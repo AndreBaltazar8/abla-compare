@@ -1,0 +1,13 @@
+.{
+    .name = .abla_compare_zig,
+    .version = "0.1.0",
+    .fingerprint = 0xd536e6f56dd1790f,
+    .minimum_zig_version = "0.16.0",
+    .dependencies = .{
+        .httpz = .{
+            .url = "git+https://github.com/karlseguin/http.zig#dce2cb07f1cd9beca6146869e1eec48025cf9f6f",
+            .hash = "httpz-0.0.0-PNVzrHbqCADfE0IDJr3zdYXpu3BC4RHZG7Nb-sHefxEL",
+        },
+    },
+    .paths = .{ "build.zig", "build.zig.zon", "src" },
+}

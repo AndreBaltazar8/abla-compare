@@ -3,3 +3,6 @@
 /.abla/
 /results/*.json
 /servers/rust/target/
+/servers/zig/.zig-cache/
+/servers/zig/zig-out/
+/servers/zig/zig-pkg/

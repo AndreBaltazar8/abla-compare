@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Build, validate, and benchmark the three equivalent HTTP servers."""
+"""Build, validate, and benchmark the equivalent HTTP servers."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import platform
 import shutil
@@ -37,6 +38,9 @@ class Scenario:
 
 
 BODY_16K = bytes(range(256)) * 64
+RIDICULOUS_HEADERS = tuple(
+    f"X-Bench-{index:02d}: v{index:02d}" for index in range(32)
+)
 SCENARIOS = {
     scenario.name: scenario
     for scenario in (
@@ -61,6 +65,26 @@ SCENARIOS = {
             BODY_16K,
             ("Content-Type: application/octet-stream",),
             BODY_16K_PATH,
+        ),
+        Scenario(
+            "route-tail-128",
+            "GET",
+            "/ridiculous/acct-42/orders/order-7?expand=lines",
+            b"acct-42:order-7:lines\n",
+        ),
+        Scenario(
+            "parameters-16",
+            "GET",
+            "/p/v0/s1/v1/s2/v2/s3/v3/s4/v4/s5/v5/s6/v6/s7/v7"
+            "?q0=qv0&q1=qv1&q2=qv2&q3=qv3&q4=qv4&q5=qv5&q6=qv6&q7=qv7",
+            b"v0:v1:v2:v3:v4:v5:v6:v7:qv0:qv1:qv2:qv3:qv4:qv5:qv6:qv7\n",
+        ),
+        Scenario(
+            "headers-32",
+            "GET",
+            "/headers-32",
+            b"v00:v07:v15:v23:v31\n",
+            RIDICULOUS_HEADERS,
         ),
     )
 }
@@ -94,6 +118,14 @@ def compiler_path() -> Path:
     return (ROOT.parent / "ablac" / "build" / "ablac").absolute()
 
 
+def find_zig() -> str:
+    configured = os.environ.get("ZIG")
+    executable = configured or shutil.which("zig")
+    if not executable:
+        raise SystemExit("zig was not found; set ZIG to a Zig 0.16.0 executable")
+    return executable
+
+
 def build_servers() -> list[Server]:
     BUILD.mkdir(exist_ok=True)
     BODY_16K_PATH.write_bytes(BODY_16K)
@@ -125,10 +157,19 @@ def build_servers() -> list[Server]:
         ROOT / "servers" / "rust" / "target" / "release" / "abla-compare-rust",
         BUILD / "rust-server",
     )
+    run(
+        [find_zig(), "build", "-Doptimize=ReleaseFast"],
+        cwd=ROOT / "servers" / "zig",
+    )
+    shutil.copy2(
+        ROOT / "servers" / "zig" / "zig-out" / "bin" / "abla-compare-zig",
+        BUILD / "zig-server",
+    )
     return [
         Server("abla", BUILD / "abla-server"),
         Server("go", BUILD / "go-server"),
         Server("rust", BUILD / "rust-server"),
+        Server("zig", BUILD / "zig-server"),
     ]
 
 
@@ -186,6 +227,16 @@ def default_cpu_sets(server_cpu_count: int) -> tuple[set[int], set[int]]:
     if not client_cpus:
         client_cpus = available - server_cpus
     return server_cpus, client_cpus
+
+
+def default_zig_worker_split(worker_limit: int) -> tuple[int, int]:
+    if worker_limit == 1:
+        # One event loop and two handlers was the best single-CPU configuration.
+        return 1, 2
+    event_workers = math.isqrt(worker_limit)
+    while worker_limit % event_workers != 0:
+        event_workers -= 1
+    return event_workers, worker_limit // event_workers - 1
 
 
 def find_oha() -> str:
@@ -272,22 +323,38 @@ def start_servers(
     port: int,
     workers: int,
     server_cpus: set[int],
+    pin_abla_workers: bool,
+    zig_event_workers: int,
+    zig_handler_threads: int,
 ) -> list[subprocess.Popen[bytes]]:
     count = workers if server.name == "abla" else 1
     command = [str(server.executable), str(port)]
+    environment = os.environ.copy()
     if server.name == "abla":
         command.append(scenario.name)
+    elif server.name == "go":
+        environment["GOMAXPROCS"] = str(workers)
+    elif server.name == "rust":
+        environment["TOKIO_WORKER_THREADS"] = str(workers)
+    elif server.name == "zig":
+        command.extend([str(zig_event_workers), str(zig_handler_threads)])
     if server.name == "abla" and count > 1:
         command.append("--reuse-port")
+    ordered_server_cpus = sorted(server_cpus)
     return [
         subprocess.Popen(
             command,
             cwd=ROOT,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.PIPE,
-            preexec_fn=affinity(server_cpus),
+            preexec_fn=affinity(
+                {ordered_server_cpus[index % len(ordered_server_cpus)]}
+                if server.name == "abla" and pin_abla_workers
+                else server_cpus
+            ),
+            env=environment,
         )
-        for _ in range(count)
+        for index in range(count)
     ]
 
 
@@ -356,6 +423,7 @@ def machine_metadata() -> dict[str, Any]:
         "go": version(["go", "version"]),
         "rust": version(["rustc", "--version"]),
         "cargo": version(["cargo", "--version"]),
+        "zig": version([find_zig(), "version"]),
         "oha": version([find_oha(), "--version"]),
         "abla_compiler": str(compiler_path()),
     }
@@ -383,6 +451,11 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
         if args.scenario == "all"
         else [SCENARIOS[args.scenario]]
     )
+    default_zig_event_workers, default_zig_handler_threads = (
+        default_zig_worker_split(args.workers)
+    )
+    zig_event_workers = args.zig_event_workers or default_zig_event_workers
+    zig_handler_threads = args.zig_handler_threads or default_zig_handler_threads
     result: dict[str, Any] = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "configuration": {
@@ -393,7 +466,22 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             "connections": args.connections,
             "repetitions": args.repetitions,
             "abla_process_workers": args.workers,
-            "go_rust_worker_model": "one process with runtime-managed threads",
+            "abla_worker_affinity": (
+                "one process per CPU" if args.pin_abla_workers else "shared CPU set"
+            ),
+            "go_gomaxprocs": args.workers,
+            "rust_tokio_worker_threads": args.workers,
+            "go_rust_zig_worker_model": "one process; threads inherit server affinity",
+            "zig_http_server": "httpz dce2cb07f1cd9beca6146869e1eec48025cf9f6f",
+            "zig_event_workers": zig_event_workers,
+            "zig_handler_threads_per_event_worker": zig_handler_threads,
+            "zig_active_worker_threads": zig_event_workers
+            * (1 + zig_handler_threads),
+            "parameters_16_access_model": (
+                "Abla and Zig use positional path/query values; Go uses named "
+                "path/query access; Rust uses positional path and named query access"
+            ),
+            "headers_32_access_model": "all implementations use header names",
             "server_cpus": sorted(server_cpus),
             "client_cpus": sorted(client_cpus),
         },
@@ -418,7 +506,14 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
                 flush=True,
             )
             processes = start_servers(
-                server, scenario, port, args.workers, server_cpus
+                server,
+                scenario,
+                port,
+                args.workers,
+                server_cpus,
+                args.pin_abla_workers,
+                zig_event_workers,
+                zig_handler_threads,
             )
             try:
                 wait_until_ready(port, processes, scenario)
@@ -499,6 +594,12 @@ def main() -> int:
     parser.add_argument("--duration", type=int, default=10)
     parser.add_argument("--repetitions", type=int, default=3)
     parser.add_argument(
+        "--server",
+        choices=["all", "abla", "go", "rust", "zig"],
+        default="all",
+        help="benchmark one server or every server",
+    )
+    parser.add_argument(
         "--scenario",
         choices=["all", *SCENARIOS],
         default="all",
@@ -508,7 +609,22 @@ def main() -> int:
         "--workers",
         type=int,
         default=1,
-        help="Abla SO_REUSEPORT worker processes and default server CPU count",
+        help="server execution-worker limit and default server CPU count",
+    )
+    parser.add_argument(
+        "--pin-abla-workers",
+        action="store_true",
+        help="pin each Abla process to one server CPU instead of sharing the set",
+    )
+    parser.add_argument(
+        "--zig-event-workers",
+        type=int,
+        help="override the auto-tuned Zig httpz event-loop worker count",
+    )
+    parser.add_argument(
+        "--zig-handler-threads",
+        type=int,
+        help="override Zig handler threads per event worker",
     )
     parser.add_argument(
         "--server-cpus",
@@ -531,12 +647,19 @@ def main() -> int:
         args.workers,
     ) <= 0:
         parser.error("connections, durations, and repetitions must be positive")
+    if args.zig_event_workers is not None and args.zig_event_workers <= 0:
+        parser.error("--zig-event-workers must be positive")
+    if args.zig_handler_threads is not None and args.zig_handler_threads <= 0:
+        parser.error("--zig-handler-threads must be positive")
 
     servers = build_servers() if not args.skip_build else [
         Server("abla", BUILD / "abla-server"),
         Server("go", BUILD / "go-server"),
         Server("rust", BUILD / "rust-server"),
+        Server("zig", BUILD / "zig-server"),
     ]
+    if args.server != "all":
+        servers = [server for server in servers if server.name == args.server]
     if args.build_only:
         return 0
     for server in servers:

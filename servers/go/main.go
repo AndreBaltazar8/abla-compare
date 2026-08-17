@@ -56,6 +56,46 @@ func main() {
 			request.URL.Query().Get("filter"),
 		)
 	})
+	for index := range 128 {
+		mux.HandleFunc(fmt.Sprintf("GET /ridiculous/decoy-%d", index), func(response http.ResponseWriter, _ *http.Request) {
+			response.Header().Set("Content-Type", "text/plain; charset=utf-8")
+			_, _ = response.Write([]byte("decoy\n"))
+		})
+	}
+	mux.HandleFunc("GET /ridiculous/{account}/orders/{order}", func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		_, _ = fmt.Fprintf(
+			response,
+			"%s:%s:%s\n",
+			request.PathValue("account"),
+			request.PathValue("order"),
+			request.URL.Query().Get("expand"),
+		)
+	})
+	mux.HandleFunc("GET /p/{p0}/s1/{p1}/s2/{p2}/s3/{p3}/s4/{p4}/s5/{p5}/s6/{p6}/s7/{p7}", func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		query := request.URL.Query()
+		_, _ = fmt.Fprintf(
+			response,
+			"%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s:%s\n",
+			request.PathValue("p0"), request.PathValue("p1"),
+			request.PathValue("p2"), request.PathValue("p3"),
+			request.PathValue("p4"), request.PathValue("p5"),
+			request.PathValue("p6"), request.PathValue("p7"),
+			query.Get("q0"), query.Get("q1"), query.Get("q2"), query.Get("q3"),
+			query.Get("q4"), query.Get("q5"), query.Get("q6"), query.Get("q7"),
+		)
+	})
+	mux.HandleFunc("GET /headers-32", func(response http.ResponseWriter, request *http.Request) {
+		response.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		_, _ = fmt.Fprintf(
+			response,
+			"%s:%s:%s:%s:%s\n",
+			request.Header.Get("X-Bench-00"), request.Header.Get("X-Bench-07"),
+			request.Header.Get("X-Bench-15"), request.Header.Get("X-Bench-23"),
+			request.Header.Get("X-Bench-31"),
+		)
+	})
 	mux.Handle("GET /context", authenticated(http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 		value := request.Context().Value(userKey).(user)
 		response.Header().Set("Content-Type", "text/plain; charset=utf-8")
