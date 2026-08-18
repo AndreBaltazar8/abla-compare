@@ -183,3 +183,24 @@ adds strict access parity and stops after exactly ten optimization rounds. Abla
 leads the 1,024-route fanout at 1,440,150 requests/second and the 32-field named
 query at 1,325,039. Nested JSON improves 2.34x to 866,864 requests/second, but
 honestly remains 18.8% behind Rust and 25.7% behind Zig.
+The follow-up
+[nested-JSON instruction profile](results/2026-08-18-json-instruction-profile.md)
+inspects the exact Zig, Rust, Go, and Abla libraries and stops after a second
+set of exactly ten measured rounds. General checked raw field, integer, and
+whitespace paths plus a smaller common string decoder cut Abla's measured
+user-space instructions per request by 24%. The final eight-core result reaches
+1,062,449 requests/second: 1.7% behind Rust and 15.5% behind Zig, with a lower
+p99 latency than either in that run.
+Two subsequently authorized
+[follow-up rounds](results/2026-08-18-json-two-more-rounds.md) tested forced
+buffer-append inlining and preallocated JSON fragment storage. Both were
+rejected and fully removed. A fresh same-condition run of the retained code
+reached 1,120,912 requests/second, 2.7% behind Rust and 13.0% behind Zig; the
+remaining Zig throughput target was not reached.
+The bounded
+[fifteen-round continuation](results/2026-08-18-json-fifteen-more-rounds.md)
+tests reader, runtime-bridge, error-state, and serializer candidates through
+round 27. It retains only behavior-preserving general changes and records the
+final same-condition comparison after full compiler and JSON validation. Abla
+reaches 1,199,986 requests/second, 97.18% of Zig and 5.44% ahead of Rust, while
+keeping a substantially lower p99 than Zig in that run.
