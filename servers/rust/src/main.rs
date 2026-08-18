@@ -1,5 +1,5 @@
 use axum::{
-    Router,
+    Json, Router,
     body::Bytes,
     extract::{Extension, Path, Query, Request},
     http::{HeaderMap, HeaderValue, StatusCode, header},
@@ -7,6 +7,7 @@ use axum::{
     response::{IntoResponse, Response},
     routing::{get, post},
 };
+use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
     net::{Ipv4Addr, SocketAddr},
@@ -17,6 +18,39 @@ struct User {
     id: &'static str,
     name: &'static str,
     tier: &'static str,
+}
+
+#[derive(Deserialize)]
+struct NestedUser {
+    id: i64,
+    name: String,
+    roles: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct NestedItem {
+    sku: String,
+    qty: i64,
+    price: i64,
+}
+
+#[derive(Deserialize)]
+struct NestedRequest {
+    request_id: String,
+    user: NestedUser,
+    items: Vec<NestedItem>,
+    active: bool,
+    note: String,
+}
+
+#[derive(Serialize)]
+struct NestedResponse {
+    active: bool,
+    item_count: usize,
+    primary_role: String,
+    request_id: String,
+    total: i64,
+    user: String,
 }
 
 async fn plaintext() -> impl IntoResponse {
@@ -111,6 +145,40 @@ async fn headers_32(headers: HeaderMap) -> impl IntoResponse {
     )
 }
 
+async fn fanout_target() -> impl IntoResponse {
+    "fanout-target\n"
+}
+
+async fn query_32_named(Query(query): Query<HashMap<String, String>>) -> impl IntoResponse {
+    let value = |name| query.get(name).map(String::as_str).unwrap_or("");
+    format!(
+        "{}:{}:{}:{}:{}:{}:{}:{}\n",
+        value("field-00"),
+        value("field-07"),
+        value("field-13"),
+        value("field-19"),
+        value("field-25"),
+        value("field-27"),
+        value("field-29"),
+        value("field-31"),
+    )
+}
+
+async fn json_nested(Json(input): Json<NestedRequest>) -> Json<NestedResponse> {
+    let total = input.items.iter().map(|item| item.qty * item.price).sum();
+    let primary_role = input.user.roles.first().cloned().unwrap_or_default();
+    let _parsed_but_unreturned = (&input.user.id, &input.note);
+    let _sku_bytes: usize = input.items.iter().map(|item| item.sku.len()).sum();
+    Json(NestedResponse {
+        active: input.active,
+        item_count: input.items.len(),
+        primary_role,
+        request_id: input.request_id,
+        total,
+        user: input.user.name,
+    })
+}
+
 async fn authenticate(mut request: Request, next: Next) -> Response {
     if request.headers().get(header::AUTHORIZATION)
         != Some(&HeaderValue::from_static("Bearer benchmark-token"))
@@ -145,22 +213,33 @@ async fn main() {
         .nth(1)
         .and_then(|value| value.parse::<u16>().ok())
         .unwrap_or(18080);
+    let scenario = std::env::var("ABLA_COMPARE_SCENARIO").unwrap_or_default();
     let protected = Router::new()
         .route("/context", get(authenticated_context))
         .layer(middleware::from_fn(authenticate));
     let mut app = Router::new()
         .route("/plaintext", get(plaintext))
         .route("/accounts/{account}/items/{item}", get(parameters))
-        .route("/ridiculous/{account}/orders/{order}", get(route_tail))
         .route(
             "/p/{p0}/s1/{p1}/s2/{p2}/s3/{p3}/s4/{p4}/s5/{p5}/s6/{p6}/s7/{p7}",
             get(parameters_16),
         )
         .route("/headers-32", get(headers_32))
+        .route("/query-32", get(query_32_named))
         .route("/body", post(echo_body))
+        .route("/json-nested", post(json_nested))
         .merge(protected);
-    for index in 0..128 {
-        app = app.route(&format!("/ridiculous/decoy-{index}"), get(decoy));
+    if scenario == "route-tail-128" {
+        app = app.route("/ridiculous/{account}/orders/{order}", get(route_tail));
+        for index in 0..128 {
+            app = app.route(&format!("/ridiculous/decoy-{index}"), get(decoy));
+        }
+    }
+    if scenario == "route-fanout-1024" {
+        for index in 0..1024 {
+            app = app.route(&format!("/fanout/decoy-{index}"), get(decoy));
+        }
+        app = app.route("/fanout/target", get(fanout_target));
     }
     let address = SocketAddr::from((Ipv4Addr::LOCALHOST, port));
     let listener = tokio::net::TcpListener::bind(address)

@@ -1,5 +1,6 @@
 import github("AndreBaltazar8/abla-web")
 import "abla/http/event"
+import "abla/json"
 import "abla/memory"
 import "abla/process/arguments"
 
@@ -103,6 +104,84 @@ fun headers32(context: WebContext): HttpResponse {
 fun handleHeaders32(request: HttpRequest): HttpResponse =
     webNoEscapeRoute(request, "GET", "/headers-32", headers32)
 
+fun fanoutTarget(request: HttpRequest): HttpResponse =
+    httpText("fanout-target\n")
+
+fun query32Named(context: WebContext): HttpResponse {
+    val q0 = context.request.queryParameter("field-00")
+    val q7 = context.request.queryParameter("field-07")
+    val q13 = context.request.queryParameter("field-13")
+    val q19 = context.request.queryParameter("field-19")
+    val q25 = context.request.queryParameter("field-25")
+    val q27 = context.request.queryParameter("field-27")
+    val q29 = context.request.queryParameter("field-29")
+    val q31 = context.request.queryParameter("field-31")
+    httpText("$q0:$q7:$q13:$q19:$q25:$q27:$q29:$q31\n")
+}
+
+fun handleQuery32Named(request: HttpRequest): HttpResponse =
+    webNoEscapeRoute(request, "GET", "/query-32", query32Named)
+
+fun jsonNested(context: WebContext): HttpResponse {
+    val reader = jsonObjectReader(context.request.body)
+    reader.nextExpectedRaw("request_id")
+    val requestId = reader.readString()
+    reader.nextExpectedRaw("user")
+    val user = reader.readObject()
+    user.nextExpectedRaw("id")
+    user.readInteger()
+    user.nextExpectedRaw("name")
+    val userName = user.readString()
+    user.nextExpectedRaw("roles")
+    val roles = user.readArray()
+    var primaryRole = ""
+    if (roles.next()) primaryRole = roles.readString()
+    while (roles.next()) roles.skip()
+    if (!roles.finishNested()) return httpJson("null", 400)
+    if (!user.finishNested()) return httpJson("null", 400)
+    reader.nextExpectedRaw("items")
+    val items = reader.readArray()
+    var itemCount = 0
+    var total = 0
+    while (items.next()) {
+        val item = items.readObject()
+        item.nextExpectedRaw("sku")
+        item.readString()
+        item.nextExpectedRaw("qty")
+        val quantity = item.readInteger()
+        item.nextExpectedRaw("price")
+        val price = item.readInteger()
+        if (!item.finishNested()) return httpJson("null", 400)
+        total = total + quantity * price
+        itemCount = itemCount + 1
+    }
+    if (!items.finishNested()) return httpJson("null", 400)
+    reader.nextExpectedRaw("active")
+    val active = reader.readBoolean()
+    reader.nextExpectedRaw("note")
+    reader.readString()
+    if (!reader.finish()) return httpJson("null", 400)
+    val encoder = jsonEncoder()
+    encoder.beginObject()
+    encoder.encodedKey(#jsonEncodeString("active"))
+    encoder.boolean(active)
+    encoder.encodedKey(#jsonEncodeString("item_count"))
+    encoder.integer(itemCount)
+    encoder.encodedKey(#jsonEncodeString("primary_role"))
+    encoder.string(primaryRole)
+    encoder.encodedKey(#jsonEncodeString("request_id"))
+    encoder.string(requestId)
+    encoder.encodedKey(#jsonEncodeString("total"))
+    encoder.integer(total)
+    encoder.encodedKey(#jsonEncodeString("user"))
+    encoder.string(userName)
+    encoder.endObject()
+    httpJson(encoder.finish())
+}
+
+fun handleJsonNested(request: HttpRequest): HttpResponse =
+    webNoEscapeRoute(request, "POST", "/json-nested", jsonNested)
+
 fun echoBody(context: WebContext): HttpResponse = HttpResponse(
     200,
     [HttpHeader("Content-Type", "application/octet-stream")],
@@ -183,6 +262,21 @@ fun main: int {
             benchmarkReusePort()
         )
         server.run()
+    } else if (scenario == "route-fanout-1024") {
+        val router = httpRouter()
+        var routeIndex = 0
+        while (routeIndex < 1024) {
+            router.get("/fanout/decoy-$routeIndex", routeTailDecoy)
+            routeIndex = routeIndex + 1
+        }
+        router.get("/fanout/target", fanoutTarget)
+        val server = httpEventServerNoEscapeHandler(
+            { request: HttpRequest -> router.dispatch(request) },
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
     } else if (scenario == "parameters-16") {
         val server = httpEventServerNoEscapeHandler(
             handleParameters16,
@@ -194,6 +288,22 @@ fun main: int {
     } else if (scenario == "headers-32") {
         val server = httpEventServerNoEscapeHandler(
             handleHeaders32,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    } else if (scenario == "query-32-named") {
+        val server = httpEventServerNoEscapeHandler(
+            handleQuery32Named,
+            ipv4Loopback(benchmarkPort()),
+            options,
+            benchmarkReusePort()
+        )
+        server.run()
+    } else if (scenario == "json-nested") {
+        val server = httpEventServerNoEscapeHandler(
+            handleJsonNested,
             ipv4Loopback(benchmarkPort()),
             options,
             benchmarkReusePort()

@@ -25,6 +25,7 @@ from typing import Any, Callable
 ROOT = Path(__file__).resolve().parent
 BUILD = ROOT / "build"
 BODY_16K_PATH = BUILD / "body-16k.bin"
+JSON_NESTED_PATH = BUILD / "json-nested.json"
 
 
 @dataclass(frozen=True)
@@ -35,9 +36,21 @@ class Scenario:
     expected_body: bytes
     headers: tuple[str, ...] = ()
     body_path: Path | None = None
+    expected_content_type: str = "text/plain"
 
 
 BODY_16K = bytes(range(256)) * 64
+JSON_NESTED = (
+    b'{"request_id":"req-123","user":{"id":42,"name":"Andre","roles":'
+    b'["admin","writer","reviewer"]},"items":[{"sku":"A-1","qty":2,'
+    b'"price":125},{"sku":"B-2","qty":3,"price":250},{"sku":"C-3",'
+    b'"qty":1,"price":500}],"active":true,"note":"weird json payload"}'
+)
+QUERY_32_TARGET = "/query-32?" + "&".join(
+    f"field-{index:02d}=value-{index:02d}"
+    for index in (19, 3, 27, 11, 31, 0, 22, 7, 14, 29, 5, 25, 9, 17, 1, 30,
+                  12, 24, 6, 20, 2, 28, 15, 10, 23, 4, 18, 26, 8, 21, 13, 16)
+)
 RIDICULOUS_HEADERS = tuple(
     f"X-Bench-{index:02d}: v{index:02d}" for index in range(32)
 )
@@ -65,6 +78,7 @@ SCENARIOS = {
             BODY_16K,
             ("Content-Type: application/octet-stream",),
             BODY_16K_PATH,
+            "application/octet-stream",
         ),
         Scenario(
             "route-tail-128",
@@ -85,6 +99,28 @@ SCENARIOS = {
             "/headers-32",
             b"v00:v07:v15:v23:v31\n",
             RIDICULOUS_HEADERS,
+        ),
+        Scenario(
+            "route-fanout-1024",
+            "GET",
+            "/fanout/target",
+            b"fanout-target\n",
+        ),
+        Scenario(
+            "query-32-named",
+            "GET",
+            QUERY_32_TARGET,
+            b"value-00:value-07:value-13:value-19:value-25:value-27:value-29:value-31\n",
+        ),
+        Scenario(
+            "json-nested",
+            "POST",
+            "/json-nested",
+            b'{"active":true,"item_count":3,"primary_role":"admin",'
+            b'"request_id":"req-123","total":1500,"user":"Andre"}',
+            ("Content-Type: application/json",),
+            JSON_NESTED_PATH,
+            "application/json",
         ),
     )
 }
@@ -129,6 +165,7 @@ def find_zig() -> str:
 def build_servers() -> list[Server]:
     BUILD.mkdir(exist_ok=True)
     BODY_16K_PATH.write_bytes(BODY_16K)
+    JSON_NESTED_PATH.write_bytes(JSON_NESTED)
     compiler = compiler_path()
     if not compiler.exists():
         raise SystemExit(f"Abla compiler not found at {compiler}; set ABLAC to override")
@@ -250,7 +287,7 @@ def find_oha() -> str:
 
 
 def request_for_scenario(port: int, scenario: Scenario) -> urllib.request.Request:
-    data = scenario.expected_body if scenario.body_path is not None else None
+    data = scenario.body_path.read_bytes() if scenario.body_path is not None else None
     headers = dict(header.split(": ", 1) for header in scenario.headers)
     if data is not None:
         headers["Content-Length"] = str(len(data))
@@ -286,12 +323,7 @@ def wait_until_ready(
                     raise RuntimeError(
                         f"unexpected response: status={response.status}, body={body!r}"
                     )
-                expected_type = (
-                    "application/octet-stream"
-                    if scenario.name == "body-16k"
-                    else "text/plain"
-                )
-                if content_type != expected_type:
+                if content_type != scenario.expected_content_type:
                     raise RuntimeError(f"unexpected content type: {content_type}")
                 return
         except (OSError, urllib.error.URLError) as error:
@@ -330,6 +362,7 @@ def start_servers(
     count = workers if server.name == "abla" else 1
     command = [str(server.executable), str(port)]
     environment = os.environ.copy()
+    environment["ABLA_COMPARE_SCENARIO"] = scenario.name
     if server.name == "abla":
         command.append(scenario.name)
     elif server.name == "go":
@@ -482,6 +515,18 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
                 "path/query access; Rust uses positional path and named query access"
             ),
             "headers_32_access_model": "all implementations use header names",
+            "route_fanout_1024_access_model": (
+                "1,024 literal decoys followed by one literal target in every router"
+            ),
+            "query_32_named_access_model": (
+                "all implementations parse 32 query fields and retrieve eight by name"
+            ),
+            "json_nested_access_model": (
+                "all implementations match schema fields by name; Abla uses its "
+                "canonical-order streaming reader and encoder, while Go, Rust, and "
+                "Zig use typed schema decoders and serializers; the fixed compact "
+                "payload order is part of this benchmark scenario"
+            ),
             "server_cpus": sorted(server_cpus),
             "client_cpus": sorted(client_cpus),
         },
@@ -494,7 +539,9 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             "method": scenario.method,
             "target": scenario.target,
             "request_body_bytes": (
-                len(scenario.expected_body) if scenario.body_path is not None else 0
+                scenario.body_path.stat().st_size
+                if scenario.body_path is not None
+                else 0
             ),
             "response_body_bytes": len(scenario.expected_body),
             "servers": {},

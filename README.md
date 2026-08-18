@@ -11,6 +11,9 @@ body-16k    POST /body with a 16 KiB binary body echoed in the response
 route-tail-128  GET after 128 decoy routes, with path and query parameters
 parameters-16   GET with eight path and eight query parameters
 headers-32      GET with 32 request headers and five spread-out lookups
+route-fanout-1024  GET a literal target registered after 1,024 literal decoys
+query-32-named     GET 32 shuffled query fields and retrieve eight by name
+json-nested        POST a compact nested schema and serialize a derived JSON object
 ```
 
 The goal is a repeatable engineering baseline, not a universal language
@@ -80,6 +83,11 @@ use a specific Zig compiler.
   `thread` collector is safe for permanent allocating server workers.
 - Server order is fixed, so rerun the suite and inspect the individual samples
   before treating small differences as meaningful.
+- `query-32-named` uses named lookup in every implementation. The compact
+  `json-nested` payload also uses JSON field names everywhere: Abla selects its
+  canonical-order streaming reader, while Go, Rust, and Zig use typed schema
+  decoders. The fixed field order is part of that benchmark contract; this is
+  not a claim that the Abla handler accepts arbitrarily reordered JSON.
 
 ## Layout
 
@@ -169,3 +177,9 @@ same positional access model to Abla and Zig for all eight route and eight query
 values. Abla reaches 1,399,623 requests/second versus Zig's 1,378,327 (+1.55%).
 The 32-header workload remains named in every implementation; Abla reaches
 1,089,695 versus Zig's 1,088,706, an effective tie with Abla 0.09% ahead.
+The new
+[weird routing, named-query, and nested-JSON pass](results/2026-08-18-weird-schema.md)
+adds strict access parity and stops after exactly ten optimization rounds. Abla
+leads the 1,024-route fanout at 1,440,150 requests/second and the 32-field named
+query at 1,325,039. Nested JSON improves 2.34x to 866,864 requests/second, but
+honestly remains 18.8% behind Rust and 25.7% behind Zig.
