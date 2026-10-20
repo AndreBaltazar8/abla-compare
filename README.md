@@ -276,3 +276,34 @@ binary hashes, configuration and checks. Validation includes all 89 suite tests
 (after correcting one launcher setup failure), JSON/UTF-8 Wasm checks, 84
 exact-response checks across Abla/Go/Rust/Zig, a byte-identical compiler
 self-rebuild, and fragmented/pipelined HTTP with a slow reader.
+
+
+### Follow-up JSON gap reduction (2026-10-20)
+
+[Final nine-case table](results/2026-10-20-gap-final.csv) compares the prior
+retained patch (`135feca`) with `83b13ac`, plus Zig/httpz. The candidate removes
+duplicate escaped-prefix scans, reserves short quoted strings once, avoids
+intermediate cursor writes, simplifies byte-scanning loops, and specializes
+constant field-name matching while keeping diagnostics out of line.
+
+Nested JSON improves another 3.11%, to 1.461M req/s versus Zig's 1.501M
+(2.64% behind). Whitespace-heavy JSON improves 4.26%, to 1.348M versus 1.445M
+(6.73% behind). Escaped JSON remains 3.88% behind; int64 JSON remains 3.65%
+behind. Empty and Unicode JSON are within 1% of Zig. The 128-item array
+improves 10.88% over the prior patch and leads Zig by 41.88%; 4 KiB strings
+improve 14.33% and lead Zig by 14.90%. All nine candidate p99 medians are
+lower than Zig's in this run, though escaped JSON's p99 rose slightly versus
+the prior Abla patch. These are workload results, not a language-wide claim.
+
+Conditions: the same eight-core server budget, 16 client workers and 256
+connections; two five-second samples after one-second warmup, reversing the
+complete server order between rounds. Medians are computed separately for
+per-run throughput and p99. Differences near 1% should be treated as parity
+given the small sample count and desktop noise.
+
+[Raw samples](results/2026-10-20-gap-final.json) include hashes and configuration.
+[Validation and initial profiles](results/2026-10-20-gap-validation.json) record
+89 passing suite tests, native and Wasm boundary checks, compile-time/runtime
+JSON agreement, the fresh compiler fixed point, and HTTP response checks.
+The compiler changes remain local on `perf/json-comparison`; no release was
+published as part of this benchmark work.
