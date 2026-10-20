@@ -1,0 +1,2668 @@
+{
+  "compiler_commit": "8ad4a1769e5271047aa950f99b60e78e23ec92ed",
+  "baseline_commit": "83b13ac936acae007df26ee300a8db0ec75d6617",
+  "compiler_branch": "perf/json-comparison",
+  "validation_logs": {
+    "validation": "PASS bytes\nPASS json-subparser\nPASS text-unicode\nPASS http-event\nWarning: supplying the --target wasm32-unknown-unknown != x86_64-unknown-linux-gnu argument to a nix-wrapped compiler may not work correctly - cc-wrapper is currently not designed with multi-target compilers in mind. You may want to use an un-wrapped compiler instead.\nPASS Wasm /tmp/ablac-json-comparison/build/json-native-paths/json-subparser.wasm\nWarning: supplying the --target wasm32-unknown-unknown != x86_64-unknown-linux-gnu argument to a nix-wrapped compiler may not work correctly - cc-wrapper is currently not designed with multi-target compilers in mind. You may want to use an un-wrapped compiler instead.\nPASS Wasm /tmp/ablac-json-comparison/build/json-native-paths/text-unicode.wasm\nabla-test: 89 test(s), 8 parallel job(s)\nPASS suite-abla-runtime-self 1051ms\nPASS suite-limited-runner 1092ms\nPASS suite-unsafe-stack-memory 1182ms\nPASS suite-package-build 1185ms\nPASS suite-named-default-arguments 1835ms\nPASS suite-import-alias 1009ms\nPASS suite-lazy-scalar-ssa 2810ms\nPASS suite-toolchain-root 1809ms\nPASS suite-native-libraries 3135ms\nPASS suite-inprocess-aot 1115ms\nPASS suite-bitwise-crypto 271ms\nPASS suite-independent-modules 5490ms\nPASS suite-nominal-scalars 5693ms\nPASS suite-reactive-reflection 3108ms\nPASS suite-contract-imports 4036ms\nPASS suite-return-control 2586ms\nPASS suite-package-providers 5794ms\nPASS suite-borrow-duplicates 1489ms\nPASS native-vm 1004ms\nPASS native-compile-time 985ms\nPASS native-compile-globals 1757ms\nPASS suite-local-shadowing 3933ms\nPASS suite-eval-steps 3826ms\nPASS native-compile-effect-method-receiver 1779ms\nPASS suite-floating-point 9368ms\nPASS suite-delegated-bindings 5171ms\nPASS native-compile-compound 1311ms\nPASS native-compile-shared 1312ms\nPASS native-collections 1348ms\nPASS native-abla-subparser 1022ms\nPASS native-abla-subparser-builder 1039ms\nPASS native-abla-subparser-import 1013ms\nPASS native-html-subparser 1472ms\nPASS native-module-frontend-subparser 1015ms\nPASS suite-concurrency 8144ms\nPASS native-subparser-inferred-lambda 1380ms\nPASS native-bootstrap-lexer 1957ms\nPASS native-classes 1189ms\nPASS native-stdlib 1070ms\nPASS native-runtime-json 4146ms\nPASS native-strings-runtime 1218ms\nPASS native-string-rope 1249ms\nPASS native-json-subparser 5397ms\nPASS native-host-runtime 1641ms\nPASS suite-borrow-lifetimes 9861ms\nPASS native-filesystem 2094ms\nPASS native-linux-filesystem 1964ms\nPASS native-process-capture 1896ms\nPASS native-bootstrap-parser 5786ms\nPASS native-memory-region 1310ms\nPASS native-bitwise 1058ms\nPASS native-host-process-configured 2264ms\nPASS native-linux-net 2938ms\nPASS native-bytes 1872ms\nPASS native-crypto 2095ms\nPASS native-http-router 3018ms\nPASS native-websocket 3577ms\nPASS native-jwt 4089ms\nPASS native-named-default-arguments 1229ms\nPASS native-types-valid 1253ms\nPASS native-websocket-server-protocol 6855ms\nPASS native-websocket-live 4339ms\nPASS native-websocket-server 7580ms\nPASS native-compiler-reflection 1024ms\nPASS native-scalar-direct-abi 1014ms\nPASS native-return-control 1240ms\nPASS native-defer 1328ms\nPASS native-loop-control 1019ms\nPASS native-jwt-remote 9028ms\nPASS native-concurrency 1551ms\nPASS native-for-range 1326ms\nPASS native-http-async 7892ms\nPASS native-definite-assignment 994ms\nPASS native-managed-alias-lifetimes 1246ms\nPASS native-stored-reference-lifetimes 1248ms\nPASS native-managed-mutable-views 1367ms\nPASS native-affine-move 1393ms\nPASS native-managed-result-freshness 1319ms\nPASS native-interior-cell 1210ms\nPASS native-nullable-refinement 1324ms\nPASS native-unsafe-boundary 3094ms\nPASS native-shared-ownership 1540ms\nPASS native-borrow-lifetimes 1580ms\nPASS native-scoped-region 1582ms\nPASS native-exhaustive-when 980ms\nPASS native-reactive-dependency-reflection 1265ms\nPASS native-delegated-bindings 1571ms\nPASS native-network-advanced 11912ms\nPASS native-bootstrap-sema 25193ms\nabla-test: 89 passed, 0 failed, 0 skipped in 38156ms\ngc stress: every safe point collects; generators, tasks, retained strings and loop roots hold\nscoped region: inferred callback safety + nested LIFO reset + affine drops + compile time + LLVM and available C differential + retention effects passed\nportable memory runtime: direct declarations + pressure safe points + limits + pure/host collection + bootstrapped global containers passed\n",
+    "fixedpoint": "pure Abla O2 self-rebuild: content-addressed release graph -> direct LLVM C API compiler -> byte-identical IR -> native child\n",
+    "http-check": "PASS fragmented 64 KB body, keep-alive, 256 pipelined responses, slow reader, close\n",
+    "responses": "PASS plaintext\nPASS parameters\nPASS context\nPASS body-16k\nPASS route-tail-128\nPASS parameters-16\nPASS headers-32\nPASS route-fanout-1024\nPASS query-32-named\nPASS json-nested\nPASS json-empty\nPASS json-items-128\nPASS json-roles-64\nPASS json-whitespace\nPASS json-escaped\nPASS json-unicode\nPASS json-strings-4k\nPASS json-int64\nPASS body-128\nPASS body-1k\nPASS body-64k\n"
+  },
+  "additional_validation": [
+    "ABLA_GC_STRESS=1 timeout 60 build/json-performance/json-subparser: exit 42"
+  ],
+  "binary_sha256": {
+    "abla-gap-final": "5628796d7d994a596c623f18bf231cd656597d064dba7cca87f0a4f8f8027012",
+    "abla-asm-direct-http": "4143138a517579c77ae7a5d9e1cdb0bd158acd105ae4ba5eaaac6a8f32569ccc",
+    "zig-server": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430"
+  },
+  "profiles_before": [
+    {
+      "case": "json-nested",
+      "server": "abla",
+      "binary_sha256": "5628796d7d994a596c623f18bf231cd656597d064dba7cca87f0a4f8f8027012",
+      "threads": "1459338",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.002595751,
+          "slowest": 0.019204391,
+          "fastest": 2.1081e-05,
+          "average": 0.00033218989901895774,
+          "requestsPerSec": 191698.87948837382,
+          "totalData": 99735168,
+          "sizePerRequest": 104,
+          "sizePerSec": 19936683.466790877
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 191698.87948837382,
+          "latency_ms": {
+            "min": 0.021,
+            "mean": 0.332,
+            "p50": 0.322,
+            "p95": 0.337,
+            "p99": 0.649,
+            "max": 19.204
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000021081": 1,
+          "0.0019394120000000002": 958968,
+          "0.0038577430000000003": 0,
+          "0.005776074": 0,
+          "0.0076944050000000005": 0,
+          "0.009612736": 12,
+          "0.011531066999999999": 0,
+          "0.013449398": 0,
+          "0.015367729": 0,
+          "0.01728606": 0,
+          "0.019204391": 11
+        },
+        "latencyPercentiles": {
+          "p10": 0.000313444,
+          "p25": 0.000317151,
+          "p50": 0.0003216,
+          "p75": 0.00032589,
+          "p90": 0.000331031,
+          "p95": 0.000337112,
+          "p99": 0.000648737,
+          "p99.9": 0.000667409,
+          "p99.99": 0.001131663
+        },
+        "firstByteHistogram": {
+          "0.000021001": 1,
+          "0.0019393283000000002": 958968,
+          "0.0038576556000000004": 0,
+          "0.0057759829000000006": 0,
+          "0.0076943102": 0,
+          "0.0096126375": 12,
+          "0.011530964800000001": 0,
+          "0.013449292100000001": 0,
+          "0.015367619400000001": 0,
+          "0.017285946700000002": 0,
+          "0.019204274": 11
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000313337,
+          "p25": 0.000317044,
+          "p50": 0.000321491,
+          "p75": 0.00032578,
+          "p90": 0.000330922,
+          "p95": 0.000337,
+          "p99": 0.000648633,
+          "p99.9": 0.000667274,
+          "p99.99": 0.001131527
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000021081": 1,
+          "0.0019394120000000002": 958968,
+          "0.0038577430000000003": 0,
+          "0.005776074": 0,
+          "0.0076944050000000005": 0,
+          "0.009612736": 12,
+          "0.011531066999999999": 0,
+          "0.013449398": 0,
+          "0.015367729": 0,
+          "0.01728606": 0,
+          "0.019204391": 11
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000313444,
+          "p25": 0.000317151,
+          "p50": 0.0003216,
+          "p75": 0.00032589,
+          "p90": 0.000331031,
+          "p95": 0.000337112,
+          "p99": 0.000648737,
+          "p99.9": 0.000667409,
+          "p99.99": 0.001131663
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 191723.03440313129,
+          "stddev": 2797.654743916562,
+          "max": 195711.59475133457,
+          "min": 164984.43903589857,
+          "percentiles": {
+            "p10": 189002.72163919001,
+            "p25": 190086.79362997095,
+            "p50": 191611.42004063888,
+            "p75": 193906.24378105384,
+            "p90": 194681.67694092274,
+            "p95": 195146.40581529887,
+            "p99": 195510.7530914283,
+            "p99.9": 195711.59475133457,
+            "p99.99": 195711.59475133457
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.00485370878125,
+            "fastest": 4.5917e-05,
+            "slowest": 0.0185641
+          },
+          "DNSLookup": {
+            "average": 7.6403125e-06,
+            "fastest": 1.041e-06,
+            "slowest": 3.4416e-05
+          },
+          "firstByte": {
+            "average": 0.00033208144824044863,
+            "fastest": 2.1001e-05,
+            "slowest": 0.019204274
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 958992
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 13506.169367419123,
+        "cpu_core/instructions/u": 43061.57306526019,
+        "cpu_core/branches/u": 7404.423813754443,
+        "cpu_core/branch-misses/u": 3.694558453042361
+      }
+    },
+    {
+      "case": "json-nested",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1459551,1459552,1459553",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.006520947,
+          "slowest": 0.017265611,
+          "fastest": 2.7125e-05,
+          "average": 0.00034156113708098994,
+          "requestsPerSec": 186227.9235161662,
+          "totalData": 96964816,
+          "sizePerRequest": 104,
+          "sizePerSec": 19367704.045681283
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 186227.9235161662,
+          "latency_ms": {
+            "min": 0.027,
+            "mean": 0.342,
+            "p50": 0.333,
+            "p95": 0.418,
+            "p99": 0.451,
+            "max": 17.266
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000027125": 1,
+          "0.0017509736": 929849,
+          "0.0034748222": 2304,
+          "0.0051986708": 182,
+          "0.0069225194": 0,
+          "0.008646368": 0,
+          "0.0103702166": 6,
+          "0.0120940652": 0,
+          "0.0138179138": 0,
+          "0.015541762399999999": 0,
+          "0.017265611": 12
+        },
+        "latencyPercentiles": {
+          "p10": 0.000266926,
+          "p25": 0.000283842,
+          "p50": 0.000333239,
+          "p75": 0.000381781,
+          "p90": 0.000402029,
+          "p95": 0.00041754,
+          "p99": 0.00045145,
+          "p99.9": 0.003282385,
+          "p99.99": 0.004331789
+        },
+        "firstByteHistogram": {
+          "0.00002705": 1,
+          "0.0017508798": 929849,
+          "0.0034747095999999996": 2304,
+          "0.0051985393999999996": 182,
+          "0.0069223691999999995": 0,
+          "0.008646199": 0,
+          "0.0103700288": 6,
+          "0.0120938586": 0,
+          "0.0138176884": 0,
+          "0.0155415182": 0,
+          "0.017265348": 12
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000266815,
+          "p25": 0.00028373,
+          "p50": 0.000333129,
+          "p75": 0.000381669,
+          "p90": 0.000401918,
+          "p95": 0.000417426,
+          "p99": 0.000451345,
+          "p99.9": 0.003282221,
+          "p99.99": 0.004331673
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000027125": 1,
+          "0.0017509736": 929849,
+          "0.0034748222": 2304,
+          "0.0051986708": 182,
+          "0.0069225194": 0,
+          "0.008646368": 0,
+          "0.0103702166": 6,
+          "0.0120940652": 0,
+          "0.0138179138": 0,
+          "0.015541762399999999": 0,
+          "0.017265611": 12
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000266926,
+          "p25": 0.000283842,
+          "p50": 0.000333239,
+          "p75": 0.000381781,
+          "p90": 0.000402029,
+          "p95": 0.00041754,
+          "p99": 0.00045145,
+          "p99.9": 0.003282385,
+          "p99.99": 0.004331789
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 186064.00821974486,
+          "stddev": 13641.714663601444,
+          "max": 208245.6682750441,
+          "min": 13240.317649932213,
+          "percentiles": {
+            "p10": 185553.50319606575,
+            "p25": 187642.59486903457,
+            "p50": 188865.5552342317,
+            "p75": 190156.94359883186,
+            "p90": 191300.21043022748,
+            "p95": 192576.81889305805,
+            "p99": 205166.9049276974,
+            "p99.9": 208245.6682750441,
+            "p99.99": 208245.6682750441
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.00404055225,
+            "fastest": 4.7149e-05,
+            "slowest": 0.017140685
+          },
+          "DNSLookup": {
+            "average": 7.064124999999999e-06,
+            "fastest": 1.057e-06,
+            "slowest": 2.9781e-05
+          },
+          "firstByte": {
+            "average": 0.00034144891641373423,
+            "fastest": 2.705e-05,
+            "slowest": 0.017265348
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 932354
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 7678.6937686758465,
+        "cpu_core/instructions/u": 25651.937332815647,
+        "cpu_core/branches/u": 5567.457337020059,
+        "cpu_core/branch-misses/u": 3.7003916967160544
+      }
+    },
+    {
+      "case": "json-whitespace",
+      "server": "abla",
+      "binary_sha256": "5628796d7d994a596c623f18bf231cd656597d064dba7cca87f0a4f8f8027012",
+      "threads": "1459776",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.003327007,
+          "slowest": 0.022558881,
+          "fastest": 2.038e-05,
+          "average": 0.0003523019802335822,
+          "requestsPerSec": 180458.92238040557,
+          "totalData": 93901080,
+          "sizePerRequest": 104,
+          "sizePerSec": 18767727.92756218
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 180458.92238040557,
+          "latency_ms": {
+            "min": 0.02,
+            "mean": 0.352,
+            "p50": 0.342,
+            "p95": 0.357,
+            "p99": 0.69,
+            "max": 22.559
+          }
+        },
+        "responseTimeHistogram": {
+          "0.00002038": 1,
+          "0.0022742301": 902876,
+          "0.0045280802": 0,
+          "0.006781930300000001": 0,
+          "0.0090357804": 0,
+          "0.0112896305": 3,
+          "0.013543480600000001": 3,
+          "0.0157973307": 0,
+          "0.0180511808": 0,
+          "0.0203050309": 0,
+          "0.022558881": 12
+        },
+        "latencyPercentiles": {
+          "p10": 0.000331498,
+          "p25": 0.000335995,
+          "p50": 0.000342095,
+          "p75": 0.000346223,
+          "p90": 0.000350701,
+          "p95": 0.000357002,
+          "p99": 0.000690212,
+          "p99.9": 0.000708687,
+          "p99.99": 0.001171628
+        },
+        "firstByteHistogram": {
+          "0.000020275": 1,
+          "0.002274108": 902876,
+          "0.004527941": 0,
+          "0.006781773999999999": 0,
+          "0.009035607": 0,
+          "0.01128944": 3,
+          "0.013543272999999998": 3,
+          "0.015797105999999998": 0,
+          "0.018050939": 0,
+          "0.020304772": 0,
+          "0.022558605": 12
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000331394,
+          "p25": 0.00033589,
+          "p50": 0.000341989,
+          "p75": 0.000346116,
+          "p90": 0.000350591,
+          "p95": 0.00035689,
+          "p99": 0.000690105,
+          "p99.9": 0.000708577,
+          "p99.99": 0.001171506
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.00002038": 1,
+          "0.0022742301": 902876,
+          "0.0045280802": 0,
+          "0.006781930300000001": 0,
+          "0.0090357804": 0,
+          "0.0112896305": 3,
+          "0.013543480600000001": 3,
+          "0.0157973307": 0,
+          "0.0180511808": 0,
+          "0.0203050309": 0,
+          "0.022558881": 12
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000331498,
+          "p25": 0.000335995,
+          "p50": 0.000342095,
+          "p75": 0.000346223,
+          "p90": 0.000350701,
+          "p95": 0.000357002,
+          "p99": 0.000690212,
+          "p99.9": 0.000708687,
+          "p99.99": 0.001171628
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 180479.94998081704,
+          "stddev": 2538.9388075277734,
+          "max": 184683.7603415342,
+          "min": 156531.0714176764,
+          "percentiles": {
+            "p10": 178375.61342253193,
+            "p25": 179007.1602864115,
+            "p50": 180213.28171886303,
+            "p75": 182630.84634994986,
+            "p90": 183261.8935567712,
+            "p95": 183487.52354874255,
+            "p99": 183840.51845027556,
+            "p99.9": 184683.7603415342,
+            "p99.99": 184683.7603415342
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.005233336765624998,
+            "fastest": 4.7541e-05,
+            "slowest": 0.022426659
+          },
+          "DNSLookup": {
+            "average": 6.884218749999999e-06,
+            "fastest": 1.104e-06,
+            "slowest": 3.0909e-05
+          },
+          "firstByte": {
+            "average": 0.00035219607271498403,
+            "fastest": 2.0275e-05,
+            "slowest": 0.022558605
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 902895
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 15295.325573848564,
+        "cpu_core/instructions/u": 51102.93966408054,
+        "cpu_core/branches/u": 9089.165634985242,
+        "cpu_core/branch-misses/u": 3.099861002663654
+      }
+    },
+    {
+      "case": "json-whitespace",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1460000,1460001,1460002",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.005378955,
+          "slowest": 0.023349836,
+          "fastest": 3.0048e-05,
+          "average": 0.000354082418749928,
+          "requestsPerSec": 179444.95473270313,
+          "totalData": 93411760,
+          "sizePerRequest": 104,
+          "sizePerSec": 18662275.292201128
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 179444.95473270313,
+          "latency_ms": {
+            "min": 0.03,
+            "mean": 0.354,
+            "p50": 0.344,
+            "p95": 0.425,
+            "p99": 0.46,
+            "max": 23.35
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000030048": 1,
+          "0.0023620267999999995": 895318,
+          "0.0046940055999999996": 2850,
+          "0.007025984399999999": 0,
+          "0.009357963199999998": 0,
+          "0.011689941999999997": 0,
+          "0.014021920799999997": 6,
+          "0.0163538996": 0,
+          "0.018685878399999998": 0,
+          "0.021017857199999997": 0,
+          "0.023349835999999995": 15
+        },
+        "latencyPercentiles": {
+          "p10": 0.00027628,
+          "p25": 0.000293897,
+          "p50": 0.000343727,
+          "p75": 0.000395812,
+          "p90": 0.000412992,
+          "p95": 0.000425422,
+          "p99": 0.000460236,
+          "p99.9": 0.003316085,
+          "p99.99": 0.004331169
+        },
+        "firstByteHistogram": {
+          "0.000029983": 1,
+          "0.0023619415": 895318,
+          "0.0046939": 2850,
+          "0.0070258585": 0,
+          "0.009357817000000001": 0,
+          "0.011689775500000001": 0,
+          "0.014021734000000001": 6,
+          "0.0163536925": 0,
+          "0.018685651": 0,
+          "0.021017609500000003": 0,
+          "0.023349568": 15
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000276181,
+          "p25": 0.000293799,
+          "p50": 0.00034363,
+          "p75": 0.000395712,
+          "p90": 0.000412892,
+          "p95": 0.000425321,
+          "p99": 0.000460141,
+          "p99.9": 0.003315988,
+          "p99.99": 0.00433105
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000030048": 1,
+          "0.0023620267999999995": 895318,
+          "0.0046940055999999996": 2850,
+          "0.007025984399999999": 0,
+          "0.009357963199999998": 0,
+          "0.011689941999999997": 0,
+          "0.014021920799999997": 6,
+          "0.0163538996": 0,
+          "0.018685878399999998": 0,
+          "0.021017857199999997": 0,
+          "0.023349835999999995": 15
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.00027628,
+          "p25": 0.000293897,
+          "p50": 0.000343727,
+          "p75": 0.000395812,
+          "p90": 0.000412992,
+          "p95": 0.000425422,
+          "p99": 0.000460236,
+          "p99.9": 0.003316085,
+          "p99.99": 0.004331169
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 179471.28580773354,
+          "stddev": 14199.629180460453,
+          "max": 204941.2865229283,
+          "min": 81006.13216420483,
+          "percentiles": {
+            "p10": 177859.35166564854,
+            "p25": 181874.78691237821,
+            "p50": 182842.56574930824,
+            "p75": 183954.85533786233,
+            "p90": 185244.884835595,
+            "p95": 187932.56655110803,
+            "p99": 200281.81512147334,
+            "p99.9": 204941.2865229283,
+            "p99.99": 204941.2865229283
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.006551409171875002,
+            "fastest": 4.8288e-05,
+            "slowest": 0.023234842
+          },
+          "DNSLookup": {
+            "average": 7.306859375e-06,
+            "fastest": 9.88e-07,
+            "slowest": 3.3278e-05
+          },
+          "firstByte": {
+            "average": 0.0003539837495852686,
+            "fastest": 2.9983e-05,
+            "slowest": 0.023349568
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 898190
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 8378.97841325332,
+        "cpu_core/instructions/u": 27911.964798093944,
+        "cpu_core/branches/u": 6131.757059196829,
+        "cpu_core/branch-misses/u": 3.984737082354513
+      }
+    },
+    {
+      "case": "json-escaped",
+      "server": "abla",
+      "binary_sha256": "5628796d7d994a596c623f18bf231cd656597d064dba7cca87f0a4f8f8027012",
+      "threads": "1460203",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.003535496,
+          "slowest": 0.0235872,
+          "fastest": 4.2745e-05,
+          "average": 0.0004594672698883675,
+          "requestsPerSec": 138417.924796111,
+          "totalData": 416239979,
+          "sizePerRequest": 601,
+          "sizePerSec": 83189172.80246273
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 138417.924796111,
+          "latency_ms": {
+            "min": 0.043,
+            "mean": 0.459,
+            "p50": 0.452,
+            "p95": 0.462,
+            "p99": 0.903,
+            "max": 23.587
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000042745": 1,
+          "0.0023971904999999997": 692564,
+          "0.004751636": 0,
+          "0.0071060815": 0,
+          "0.009460527": 0,
+          "0.0118149725": 0,
+          "0.014169418": 0,
+          "0.0165238635": 0,
+          "0.018878309": 6,
+          "0.0212327545": 0,
+          "0.0235872": 8
+        },
+        "latencyPercentiles": {
+          "p10": 0.000444272,
+          "p25": 0.000448477,
+          "p50": 0.000452255,
+          "p75": 0.000455246,
+          "p90": 0.000458507,
+          "p95": 0.000462022,
+          "p99": 0.000903357,
+          "p99.9": 0.000919439,
+          "p99.99": 0.001457961
+        },
+        "firstByteHistogram": {
+          "0.000042628": 1,
+          "0.0023970589": 692564,
+          "0.0047514898000000005": 0,
+          "0.007105920700000001": 0,
+          "0.0094603516": 0,
+          "0.011814782499999999": 0,
+          "0.0141692134": 0,
+          "0.0165236443": 0,
+          "0.0188780752": 6,
+          "0.0212325061": 0,
+          "0.023586937": 8
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000444166,
+          "p25": 0.000448371,
+          "p50": 0.000452148,
+          "p75": 0.000455138,
+          "p90": 0.000458399,
+          "p95": 0.000461911,
+          "p99": 0.00090326,
+          "p99.9": 0.000919339,
+          "p99.99": 0.001457877
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000042745": 1,
+          "0.0023971904999999997": 692564,
+          "0.004751636": 0,
+          "0.0071060815": 0,
+          "0.009460527": 0,
+          "0.0118149725": 0,
+          "0.014169418": 0,
+          "0.0165238635": 0,
+          "0.018878309": 6,
+          "0.0212327545": 0,
+          "0.0235872": 8
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000444272,
+          "p25": 0.000448477,
+          "p50": 0.000452255,
+          "p75": 0.000455246,
+          "p90": 0.000458507,
+          "p95": 0.000462022,
+          "p99": 0.000903357,
+          "p99.9": 0.000919439,
+          "p99.99": 0.001457961
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 138439.75637580568,
+          "stddev": 1388.9522969474315,
+          "max": 140239.88422306904,
+          "min": 119612.45165621741,
+          "percentiles": {
+            "p10": 137747.89992014467,
+            "p25": 138123.7849157644,
+            "p50": 138549.63360429066,
+            "p75": 138975.50539208401,
+            "p90": 139395.98807738663,
+            "p95": 139669.3071341079,
+            "p99": 140019.68676794987,
+            "p99.9": 140239.88422306904,
+            "p99.99": 140239.88422306904
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.0046280025,
+            "fastest": 4.8286e-05,
+            "slowest": 0.023381415
+          },
+          "DNSLookup": {
+            "average": 7.204609375e-06,
+            "fastest": 1.096e-06,
+            "slowest": 2.9343e-05
+          },
+          "firstByte": {
+            "average": 0.00045935964302123766,
+            "fastest": 4.2628e-05,
+            "slowest": 0.023586937
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 692579
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 24082.408965619805,
+        "cpu_core/instructions/u": 85015.91445308045,
+        "cpu_core/branches/u": 16036.076635300811,
+        "cpu_core/branch-misses/u": 9.878312798973113
+      }
+    },
+    {
+      "case": "json-escaped",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1460405,1460406,1460407",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.002969527,
+          "slowest": 0.023442488,
+          "fastest": 3.2541e-05,
+          "average": 0.00048079006969836647,
+          "requestsPerSec": 132300.42606253916,
+          "totalData": 397798895,
+          "sizePerRequest": 601,
+          "sizePerSec": 79512556.06358603
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 132300.42606253916,
+          "latency_ms": {
+            "min": 0.033,
+            "mean": 0.481,
+            "p50": 0.472,
+            "p95": 0.602,
+            "p99": 0.625,
+            "max": 23.442
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000032541": 1,
+          "0.0023735357": 659692,
+          "0.0047145304": 2184,
+          "0.0070555251000000005": 0,
+          "0.009396519800000001": 0,
+          "0.0117375145": 0,
+          "0.014078509200000002": 0,
+          "0.0164195039": 6,
+          "0.0187604986": 0,
+          "0.021101493300000003": 0,
+          "0.023442488": 12
+        },
+        "latencyPercentiles": {
+          "p10": 0.000357973,
+          "p25": 0.00039547,
+          "p50": 0.000471597,
+          "p75": 0.000547925,
+          "p90": 0.000589974,
+          "p95": 0.0006016,
+          "p99": 0.000625086,
+          "p99.9": 0.003351786,
+          "p99.99": 0.00346297
+        },
+        "firstByteHistogram": {
+          "0.000032475": 1,
+          "0.002373454": 659692,
+          "0.004714433": 2184,
+          "0.007055412": 0,
+          "0.009396391": 0,
+          "0.01173737": 0,
+          "0.014078349": 0,
+          "0.016419328": 6,
+          "0.018760307": 0,
+          "0.021101286": 0,
+          "0.023442265": 12
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000357865,
+          "p25": 0.000395362,
+          "p50": 0.000471492,
+          "p75": 0.000547815,
+          "p90": 0.000589867,
+          "p95": 0.000601496,
+          "p99": 0.000624968,
+          "p99.9": 0.003351668,
+          "p99.99": 0.003462843
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000032541": 1,
+          "0.0023735357": 659692,
+          "0.0047145304": 2184,
+          "0.0070555251000000005": 0,
+          "0.009396519800000001": 0,
+          "0.0117375145": 0,
+          "0.014078509200000002": 0,
+          "0.0164195039": 6,
+          "0.0187604986": 0,
+          "0.021101493300000003": 0,
+          "0.023442488": 12
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000357973,
+          "p25": 0.00039547,
+          "p50": 0.000471597,
+          "p75": 0.000547925,
+          "p90": 0.000589974,
+          "p95": 0.0006016,
+          "p99": 0.000625086,
+          "p99.9": 0.003351786,
+          "p99.99": 0.00346297
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 132328.3032253008,
+          "stddev": 6480.706155658432,
+          "max": 156309.23787595847,
+          "min": 98640.22548395355,
+          "percentiles": {
+            "p10": 130314.39974117058,
+            "p25": 132425.2402508012,
+            "p50": 133455.95808322547,
+            "p75": 134872.40533595276,
+            "p90": 136032.20970461358,
+            "p95": 136523.88177031899,
+            "p99": 144839.81387233082,
+            "p99.9": 156309.23787595847,
+            "p99.99": 156309.23787595847
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.005769803156250002,
+            "fastest": 4.6585e-05,
+            "slowest": 0.023274118
+          },
+          "DNSLookup": {
+            "average": 7.083296874999999e-06,
+            "fastest": 1.013e-06,
+            "slowest": 3.4619e-05
+          },
+          "firstByte": {
+            "average": 0.0004806853079748372,
+            "fastest": 3.2475e-05,
+            "slowest": 0.023442265
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 661895
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 14896.117770945542,
+        "cpu_core/instructions/u": 56399.777618806605,
+        "cpu_core/branches/u": 13117.924518239297,
+        "cpu_core/branch-misses/u": 9.918913120661133
+      }
+    },
+    {
+      "case": "json-int64",
+      "server": "abla",
+      "binary_sha256": "5628796d7d994a596c623f18bf231cd656597d064dba7cca87f0a4f8f8027012",
+      "threads": "1460618",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.002948734,
+          "slowest": 0.01637672,
+          "fastest": 2.0637e-05,
+          "average": 0.0003257696685680602,
+          "requestsPerSec": 195251.65096364947,
+          "totalData": 99637068,
+          "sizePerRequest": 102,
+          "sizePerSec": 19915668.398292243
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 195251.65096364947,
+          "latency_ms": {
+            "min": 0.021,
+            "mean": 0.326,
+            "p50": 0.316,
+            "p95": 0.331,
+            "p99": 0.638,
+            "max": 16.377
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000020637": 1,
+          "0.0016562453": 976815,
+          "0.0032918536": 0,
+          "0.004927461900000001": 0,
+          "0.0065630702": 0,
+          "0.0081986785": 0,
+          "0.009834286800000001": 0,
+          "0.0114698951": 0,
+          "0.013105503400000001": 0,
+          "0.014741111700000002": 6,
+          "0.01637672": 12
+        },
+        "latencyPercentiles": {
+          "p10": 0.000306758,
+          "p25": 0.000310765,
+          "p50": 0.000315685,
+          "p75": 0.000320569,
+          "p90": 0.000325632,
+          "p95": 0.00033096,
+          "p99": 0.000637857,
+          "p99.9": 0.000657372,
+          "p99.99": 0.001121674
+        },
+        "firstByteHistogram": {
+          "0.00002057": 1,
+          "0.0016561610999999996": 976815,
+          "0.0032917521999999994": 0,
+          "0.004927343299999999": 0,
+          "0.006562934399999999": 0,
+          "0.008198525499999998": 0,
+          "0.009834116599999996": 0,
+          "0.011469707699999996": 0,
+          "0.013105298799999996": 0,
+          "0.014740889899999996": 6,
+          "0.016376481": 12
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000306652,
+          "p25": 0.000310659,
+          "p50": 0.000315578,
+          "p75": 0.00032046,
+          "p90": 0.000325521,
+          "p95": 0.00033085,
+          "p99": 0.000637756,
+          "p99.9": 0.000657263,
+          "p99.99": 0.001121564
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000020637": 1,
+          "0.0016562453": 976815,
+          "0.0032918536": 0,
+          "0.004927461900000001": 0,
+          "0.0065630702": 0,
+          "0.0081986785": 0,
+          "0.009834286800000001": 0,
+          "0.0114698951": 0,
+          "0.013105503400000001": 0,
+          "0.014741111700000002": 6,
+          "0.01637672": 12
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000306758,
+          "p25": 0.000310765,
+          "p50": 0.000315685,
+          "p75": 0.000320569,
+          "p90": 0.000325632,
+          "p95": 0.00033096,
+          "p99": 0.000637857,
+          "p99.9": 0.000657372,
+          "p99.99": 0.001121674
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 195304.80942041267,
+          "stddev": 3243.022037621779,
+          "max": 200337.49162050945,
+          "min": 165115.89484659283,
+          "percentiles": {
+            "p10": 191630.2584178043,
+            "p25": 193441.1062350784,
+            "p50": 194886.4516299428,
+            "p75": 197889.52522121332,
+            "p90": 198621.94772522678,
+            "p95": 199320.8881186482,
+            "p99": 199944.33981892848,
+            "p99.9": 200337.49162050945,
+            "p99.99": 200337.49162050945
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.004363579375000003,
+            "fastest": 4.6403e-05,
+            "slowest": 0.016273398
+          },
+          "DNSLookup": {
+            "average": 7.165781250000001e-06,
+            "fastest": 1.071e-06,
+            "slowest": 3.1313e-05
+          },
+          "firstByte": {
+            "average": 0.0003256624768977874,
+            "fastest": 2.057e-05,
+            "slowest": 0.016376481
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 976834
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 13012.119944637472,
+        "cpu_core/instructions/u": 41781.43905515164,
+        "cpu_core/branches/u": 7274.332962407123,
+        "cpu_core/branch-misses/u": 1.4220911639029763
+      }
+    },
+    {
+      "case": "json-int64",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1460862,1460863,1460864",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.002717424,
+          "slowest": 0.020211265,
+          "fastest": 2.4044e-05,
+          "average": 0.0003514251446082886,
+          "requestsPerSec": 180910.67779645993,
+          "totalData": 92314590,
+          "sizePerRequest": 102,
+          "sizePerSec": 18452889.135238912
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 180910.67779645993,
+          "latency_ms": {
+            "min": 0.024,
+            "mean": 0.351,
+            "p50": 0.316,
+            "p95": 0.435,
+            "p99": 1.24,
+            "max": 20.211
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000024044": 1,
+          "0.0020427660999999997": 904070,
+          "0.0040614881999999995": 958,
+          "0.006080210299999999": 0,
+          "0.0080989324": 0,
+          "0.0101176545": 0,
+          "0.012136376599999998": 0,
+          "0.014155098699999999": 0,
+          "0.0161738208": 6,
+          "0.018192542899999997": 0,
+          "0.020211265": 10
+        },
+        "latencyPercentiles": {
+          "p10": 0.000262993,
+          "p25": 0.000269549,
+          "p50": 0.000315532,
+          "p75": 0.000375791,
+          "p90": 0.000405951,
+          "p95": 0.000435446,
+          "p99": 0.00123986,
+          "p99.9": 0.003221101,
+          "p99.99": 0.003297092
+        },
+        "firstByteHistogram": {
+          "0.000023979": 1,
+          "0.0020426802": 904070,
+          "0.0040613814": 958,
+          "0.0060800826": 0,
+          "0.0080987838": 0,
+          "0.010117485": 0,
+          "0.0121361862": 0,
+          "0.0141548874": 0,
+          "0.0161735886": 6,
+          "0.0181922898": 0,
+          "0.020210991": 10
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000262881,
+          "p25": 0.000269438,
+          "p50": 0.000315416,
+          "p75": 0.000375678,
+          "p90": 0.000405835,
+          "p95": 0.000435335,
+          "p99": 0.001239746,
+          "p99.9": 0.00322097,
+          "p99.99": 0.003296972
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000024044": 1,
+          "0.0020427660999999997": 904070,
+          "0.0040614881999999995": 958,
+          "0.006080210299999999": 0,
+          "0.0080989324": 0,
+          "0.0101176545": 0,
+          "0.012136376599999998": 0,
+          "0.014155098699999999": 0,
+          "0.0161738208": 6,
+          "0.018192542899999997": 0,
+          "0.020211265": 10
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000262993,
+          "p25": 0.000269549,
+          "p50": 0.000315532,
+          "p75": 0.000375791,
+          "p90": 0.000405951,
+          "p95": 0.000435446,
+          "p99": 0.00123986,
+          "p99.9": 0.003221101,
+          "p99.99": 0.003297092
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 180849.48817241538,
+          "stddev": 11977.348186098061,
+          "max": 205087.7980863616,
+          "min": 124161.74981917015,
+          "percentiles": {
+            "p10": 165318.9290173858,
+            "p25": 170334.7142147584,
+            "p50": 184721.09514907628,
+            "p75": 191117.96508871825,
+            "p90": 192707.7083083324,
+            "p95": 193534.99112639425,
+            "p99": 198528.11158059366,
+            "p99.9": 205087.7980863616,
+            "p99.99": 205087.7980863616
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.004545256515625001,
+            "fastest": 4.5871e-05,
+            "slowest": 0.020054999
+          },
+          "DNSLookup": {
+            "average": 7.192437500000001e-06,
+            "fastest": 1.078e-06,
+            "slowest": 3.0189e-05
+          },
+          "firstByte": {
+            "average": 0.00035131188903537574,
+            "fastest": 2.3979e-05,
+            "slowest": 0.020210991
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 905045
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 7905.493851686932,
+        "cpu_core/instructions/u": 25699.959879343016,
+        "cpu_core/branches/u": 5774.48087774641,
+        "cpu_core/branch-misses/u": 2.261982553353701
+      }
+    }
+  ],
+  "profiles_after": [
+    {
+      "case": "json-nested",
+      "server": "abla",
+      "binary_sha256": "4143138a517579c77ae7a5d9e1cdb0bd158acd105ae4ba5eaaac6a8f32569ccc",
+      "threads": "1546039",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.003744255,
+          "slowest": 0.021397607,
+          "fastest": 1.9383e-05,
+          "average": 0.0003134277220482721,
+          "requestsPerSec": 202781.94653655417,
+          "totalData": 105525576,
+          "sizePerRequest": 104,
+          "sizePerSec": 21089322.439801633
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 202781.94653655417,
+          "latency_ms": {
+            "min": 0.019,
+            "mean": 0.313,
+            "p50": 0.303,
+            "p95": 0.325,
+            "p99": 0.611,
+            "max": 21.398
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000019383": 1,
+          "0.0021572054": 1014646,
+          "0.0042950278": 4,
+          "0.0064328502000000004": 0,
+          "0.008570672599999999": 0,
+          "0.010708494999999998": 0,
+          "0.0128463174": 0,
+          "0.014984139799999999": 6,
+          "0.0171219622": 0,
+          "0.0192597846": 0,
+          "0.021397607": 12
+        },
+        "latencyPercentiles": {
+          "p10": 0.000295969,
+          "p25": 0.000299304,
+          "p50": 0.000302982,
+          "p75": 0.000306833,
+          "p90": 0.000311945,
+          "p95": 0.000325184,
+          "p99": 0.000610692,
+          "p99.9": 0.000647961,
+          "p99.99": 0.001341633
+        },
+        "firstByteHistogram": {
+          "0.000019315": 1,
+          "0.0021571203": 1014646,
+          "0.0042949256": 4,
+          "0.0064327309": 0,
+          "0.008570536200000001": 0,
+          "0.010708341500000001": 0,
+          "0.012846146800000001": 0,
+          "0.014983952100000001": 6,
+          "0.0171217574": 0,
+          "0.0192595627": 0,
+          "0.021397368": 12
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000295864,
+          "p25": 0.000299199,
+          "p50": 0.000302876,
+          "p75": 0.000306726,
+          "p90": 0.000311837,
+          "p95": 0.000325071,
+          "p99": 0.000610589,
+          "p99.9": 0.000647676,
+          "p99.99": 0.001341544
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000019383": 1,
+          "0.0021572054": 1014646,
+          "0.0042950278": 4,
+          "0.0064328502000000004": 0,
+          "0.008570672599999999": 0,
+          "0.010708494999999998": 0,
+          "0.0128463174": 0,
+          "0.014984139799999999": 6,
+          "0.0171219622": 0,
+          "0.0192597846": 0,
+          "0.021397607": 12
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000295969,
+          "p25": 0.000299304,
+          "p50": 0.000302982,
+          "p75": 0.000306833,
+          "p90": 0.000311945,
+          "p95": 0.000325184,
+          "p99": 0.000610692,
+          "p99.9": 0.000647961,
+          "p99.99": 0.001341633
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 202830.25935246557,
+          "stddev": 7489.9824146197525,
+          "max": 208039.3031173678,
+          "min": 107933.50294979864,
+          "percentiles": {
+            "p10": 200481.13470520466,
+            "p25": 202007.61568711337,
+            "p50": 203627.8986831604,
+            "p75": 205551.77849300063,
+            "p90": 206609.25609467257,
+            "p95": 207123.90209829743,
+            "p99": 207765.23569194804,
+            "p99.9": 208039.3031173678,
+            "p99.99": 208039.3031173678
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.005201442515625001,
+            "fastest": 4.8599e-05,
+            "slowest": 0.021291746
+          },
+          "DNSLookup": {
+            "average": 7.493625e-06,
+            "fastest": 1.043e-06,
+            "slowest": 3.7006e-05
+          },
+          "firstByte": {
+            "average": 0.0003133213867911761,
+            "fastest": 1.9315e-05,
+            "slowest": 0.021397368
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 1014669
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 12083.359509357238,
+        "cpu_core/instructions/u": 38310.22216308964,
+        "cpu_core/branches/u": 6741.340082332268,
+        "cpu_core/branch-misses/u": 3.3697856148162604
+      }
+    },
+    {
+      "case": "json-nested",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1546274,1546275,1546276",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.005616537,
+          "slowest": 0.018643997,
+          "fastest": 2.8687e-05,
+          "average": 0.0003429518709136588,
+          "requestsPerSec": 185385.3552585864,
+          "totalData": 96508672,
+          "sizePerRequest": 104,
+          "sizePerSec": 19280076.946892988
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 185385.3552585864,
+          "latency_ms": {
+            "min": 0.029,
+            "mean": 0.343,
+            "p50": 0.333,
+            "p95": 0.418,
+            "p99": 0.453,
+            "max": 18.644
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000028687": 1,
+          "0.001890218": 925134,
+          "0.003751749": 2619,
+          "0.005613280000000001": 192,
+          "0.0074748110000000005": 0,
+          "0.009336342": 0,
+          "0.011197873": 0,
+          "0.013059404": 0,
+          "0.014920935": 6,
+          "0.016782466": 0,
+          "0.018643997": 16
+        },
+        "latencyPercentiles": {
+          "p10": 0.000267075,
+          "p25": 0.000283407,
+          "p50": 0.000333048,
+          "p75": 0.000381441,
+          "p90": 0.000402075,
+          "p95": 0.000417627,
+          "p99": 0.000453142,
+          "p99.9": 0.003271974,
+          "p99.99": 0.004391764
+        },
+        "firstByteHistogram": {
+          "0.000028627": 1,
+          "0.001890143": 925134,
+          "0.0037516589999999996": 2619,
+          "0.005613175": 192,
+          "0.0074746909999999995": 0,
+          "0.009336207": 0,
+          "0.011197723": 0,
+          "0.013059238999999999": 0,
+          "0.014920754999999999": 6,
+          "0.016782270999999998": 0,
+          "0.018643787": 16
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000266975,
+          "p25": 0.000283303,
+          "p50": 0.000332946,
+          "p75": 0.00038134,
+          "p90": 0.000401976,
+          "p95": 0.000417522,
+          "p99": 0.000453061,
+          "p99.9": 0.003271825,
+          "p99.99": 0.004391671
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000028687": 1,
+          "0.001890218": 925134,
+          "0.003751749": 2619,
+          "0.005613280000000001": 192,
+          "0.0074748110000000005": 0,
+          "0.009336342": 0,
+          "0.011197873": 0,
+          "0.013059404": 0,
+          "0.014920935": 6,
+          "0.016782466": 0,
+          "0.018643997": 16
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000267075,
+          "p25": 0.000283407,
+          "p50": 0.000333048,
+          "p75": 0.000381441,
+          "p90": 0.000402075,
+          "p95": 0.000417627,
+          "p99": 0.000453142,
+          "p99.9": 0.003271974,
+          "p99.99": 0.004391764
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 185215.64536735468,
+          "stddev": 15411.590258512331,
+          "max": 211520.1155629869,
+          "min": 18976.73580845826,
+          "percentiles": {
+            "p10": 183907.76090751114,
+            "p25": 187314.65530051288,
+            "p50": 188755.96614396086,
+            "p75": 190217.67122165652,
+            "p90": 191514.5256863659,
+            "p95": 192335.75521690198,
+            "p99": 206607.52051374945,
+            "p99.9": 211520.1155629869,
+            "p99.99": 211520.1155629869
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.00581219484375,
+            "fastest": 4.662e-05,
+            "slowest": 0.018385495
+          },
+          "DNSLookup": {
+            "average": 7.256296875000001e-06,
+            "fastest": 9.8e-07,
+            "slowest": 3.1689e-05
+          },
+          "firstByte": {
+            "average": 0.0003428498344921318,
+            "fastest": 2.8627e-05,
+            "slowest": 0.018643787
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 927968
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 7732.629333123556,
+        "cpu_core/instructions/u": 25717.77040479844,
+        "cpu_core/branches/u": 5580.766343235974,
+        "cpu_core/branch-misses/u": 3.73710192592848
+      }
+    },
+    {
+      "case": "json-whitespace",
+      "server": "abla",
+      "binary_sha256": "4143138a517579c77ae7a5d9e1cdb0bd158acd105ae4ba5eaaac6a8f32569ccc",
+      "threads": "1546476",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.003284187,
+          "slowest": 0.022271372,
+          "fastest": 3.0064e-05,
+          "average": 0.0003507283155475384,
+          "requestsPerSec": 181224.1651905191,
+          "totalData": 94298464,
+          "sizePerRequest": 104,
+          "sizePerSec": 18847313.179813985
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 181224.1651905191,
+          "latency_ms": {
+            "min": 0.03,
+            "mean": 0.351,
+            "p50": 0.339,
+            "p95": 0.354,
+            "p99": 0.684,
+            "max": 22.271
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000030064": 1,
+          "0.0022541948": 906695,
+          "0.0044783256": 0,
+          "0.006702456400000001": 0,
+          "0.0089265872": 0,
+          "0.011150718": 0,
+          "0.013374848800000002": 0,
+          "0.015598979600000002": 0,
+          "0.0178231104": 6,
+          "0.020047241200000003": 0,
+          "0.022271372": 14
+        },
+        "latencyPercentiles": {
+          "p10": 0.000331516,
+          "p25": 0.000335246,
+          "p50": 0.000339385,
+          "p75": 0.000343792,
+          "p90": 0.000349037,
+          "p95": 0.000353645,
+          "p99": 0.000683947,
+          "p99.9": 0.000703891,
+          "p99.99": 0.001222281
+        },
+        "firstByteHistogram": {
+          "0.000030002": 1,
+          "0.0022540831999999997": 906695,
+          "0.0044781644": 0,
+          "0.006702245599999999": 0,
+          "0.008926326799999999": 0,
+          "0.011150407999999999": 0,
+          "0.013374489199999997": 0,
+          "0.015598570399999998": 0,
+          "0.0178226516": 6,
+          "0.020046732799999998": 0,
+          "0.022270814": 14
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000331414,
+          "p25": 0.000335142,
+          "p50": 0.000339283,
+          "p75": 0.000343689,
+          "p90": 0.000348933,
+          "p95": 0.000353542,
+          "p99": 0.000683845,
+          "p99.9": 0.000703788,
+          "p99.99": 0.00122219
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000030064": 1,
+          "0.0022541948": 906695,
+          "0.0044783256": 0,
+          "0.006702456400000001": 0,
+          "0.0089265872": 0,
+          "0.011150718": 0,
+          "0.013374848800000002": 0,
+          "0.015598979600000002": 0,
+          "0.0178231104": 6,
+          "0.020047241200000003": 0,
+          "0.022271372": 14
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000331516,
+          "p25": 0.000335246,
+          "p50": 0.000339385,
+          "p75": 0.000343792,
+          "p90": 0.000349037,
+          "p95": 0.000353645,
+          "p99": 0.000683947,
+          "p99.9": 0.000703891,
+          "p99.99": 0.001222281
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 181265.5387946702,
+          "stddev": 6256.784977623989,
+          "max": 184611.4828342353,
+          "min": 84431.974388701,
+          "percentiles": {
+            "p10": 179428.63681043364,
+            "p25": 180553.46188006396,
+            "p50": 181451.7137384193,
+            "p75": 183370.08404611898,
+            "p90": 183809.6424517212,
+            "p95": 184010.23096884246,
+            "p99": 184302.23244833882,
+            "p99.9": 184611.4828342353,
+            "p99.99": 184611.4828342353
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.006358104046874998,
+            "fastest": 4.9903e-05,
+            "slowest": 0.022141736
+          },
+          "DNSLookup": {
+            "average": 1.2714453125000004e-05,
+            "fastest": 1.035e-06,
+            "slowest": 0.000369365
+          },
+          "firstByte": {
+            "average": 0.0003506252530847726,
+            "fastest": 3.0002e-05,
+            "slowest": 0.022270814
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 906716
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 15266.13805425293,
+        "cpu_core/instructions/u": 45721.73119808187,
+        "cpu_core/branches/u": 8410.19203808028,
+        "cpu_core/branch-misses/u": 3.323060362892019
+      }
+    },
+    {
+      "case": "json-whitespace",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1546704,1546705,1546706",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.005880694,
+          "slowest": 0.017152015,
+          "fastest": 2.5357e-05,
+          "average": 0.00037219134079320845,
+          "requestsPerSec": 170892.2070446771,
+          "totalData": 88968464,
+          "sizePerRequest": 104,
+          "sizePerSec": 17772789.53264642
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 170892.2070446771,
+          "latency_ms": {
+            "min": 0.025,
+            "mean": 0.372,
+            "p50": 0.361,
+            "p95": 0.449,
+            "p99": 0.486,
+            "max": 17.152
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000025357": 1,
+          "0.0017380228": 852510,
+          "0.0034506886": 2805,
+          "0.0051633544": 132,
+          "0.0068760202": 0,
+          "0.008588686": 0,
+          "0.0103013518": 0,
+          "0.0120140176": 0,
+          "0.0137266834": 0,
+          "0.0154393492": 0,
+          "0.017152015": 18
+        },
+        "latencyPercentiles": {
+          "p10": 0.000290739,
+          "p25": 0.000309041,
+          "p50": 0.00036124,
+          "p75": 0.000417249,
+          "p90": 0.000436105,
+          "p95": 0.000448656,
+          "p99": 0.000485572,
+          "p99.9": 0.003307291,
+          "p99.99": 0.00432155
+        },
+        "firstByteHistogram": {
+          "0.000025294": 1,
+          "0.0017379424": 852510,
+          "0.0034505908": 2805,
+          "0.005163239200000001": 132,
+          "0.006875887600000001": 0,
+          "0.008588536": 0,
+          "0.010301184400000002": 0,
+          "0.0120138328": 0,
+          "0.013726481200000001": 0,
+          "0.015439129600000002": 0,
+          "0.017151778": 18
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000290635,
+          "p25": 0.00030894,
+          "p50": 0.000361135,
+          "p75": 0.000417144,
+          "p90": 0.000436002,
+          "p95": 0.000448553,
+          "p99": 0.000485463,
+          "p99.9": 0.003307174,
+          "p99.99": 0.004321423
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000025357": 1,
+          "0.0017380228": 852510,
+          "0.0034506886": 2805,
+          "0.0051633544": 132,
+          "0.0068760202": 0,
+          "0.008588686": 0,
+          "0.0103013518": 0,
+          "0.0120140176": 0,
+          "0.0137266834": 0,
+          "0.0154393492": 0,
+          "0.017152015": 18
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000290739,
+          "p25": 0.000309041,
+          "p50": 0.00036124,
+          "p75": 0.000417249,
+          "p90": 0.000436105,
+          "p95": 0.000448656,
+          "p99": 0.000485572,
+          "p99.9": 0.003307291,
+          "p99.99": 0.00432155
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 170753.8263942594,
+          "stddev": 13300.690284645218,
+          "max": 196688.09659847504,
+          "min": 13733.044054905984,
+          "percentiles": {
+            "p10": 168503.6971752421,
+            "p25": 172647.61621254633,
+            "p50": 173919.37461833275,
+            "p75": 174827.6002198531,
+            "p90": 175729.08316327,
+            "p95": 176705.38951437475,
+            "p99": 189920.5304093363,
+            "p99.9": 196688.09659847504,
+            "p99.99": 196688.09659847504
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.004413337234374998,
+            "fastest": 5.016e-05,
+            "slowest": 0.017032728
+          },
+          "DNSLookup": {
+            "average": 7.194796875000001e-06,
+            "fastest": 1.063e-06,
+            "slowest": 3.0926e-05
+          },
+          "firstByte": {
+            "average": 0.00037208684366297167,
+            "fastest": 2.5294e-05,
+            "slowest": 0.017151778
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 855466
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 8581.505095468434,
+        "cpu_core/instructions/u": 27841.12970474572,
+        "cpu_core/branches/u": 6115.070652720272,
+        "cpu_core/branch-misses/u": 7.898759272723872
+      }
+    },
+    {
+      "case": "json-escaped",
+      "server": "abla",
+      "binary_sha256": "4143138a517579c77ae7a5d9e1cdb0bd158acd105ae4ba5eaaac6a8f32569ccc",
+      "threads": "1546875",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.002756699,
+          "slowest": 0.028767179,
+          "fastest": 3.112e-05,
+          "average": 0.00042837415916672394,
+          "requestsPerSec": 148363.8011315569,
+          "totalData": 446079028,
+          "sizePerRequest": 601,
+          "sizePerSec": 89166644.48006569
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 148363.8011315569,
+          "latency_ms": {
+            "min": 0.031,
+            "mean": 0.428,
+            "p50": 0.42,
+            "p95": 0.431,
+            "p99": 0.84,
+            "max": 28.767
+          }
+        },
+        "responseTimeHistogram": {
+          "0.00003112": 1,
+          "0.0029047259000000002": 742204,
+          "0.0057783318000000005": 0,
+          "0.008651937700000003": 0,
+          "0.011525543600000002": 0,
+          "0.014399149500000001": 3,
+          "0.017272755400000003": 3,
+          "0.020146361300000002": 0,
+          "0.0230199672": 0,
+          "0.0258935731": 0,
+          "0.028767179": 17
+        },
+        "latencyPercentiles": {
+          "p10": 0.000410314,
+          "p25": 0.000415397,
+          "p50": 0.00042011,
+          "p75": 0.00042393,
+          "p90": 0.000427368,
+          "p95": 0.000430622,
+          "p99": 0.000839742,
+          "p99.9": 0.000858627,
+          "p99.99": 0.001275004
+        },
+        "firstByteHistogram": {
+          "0.000031033": 1,
+          "0.0029045377000000002": 742204,
+          "0.0057780424": 0,
+          "0.0086515471": 0,
+          "0.0115250518": 0,
+          "0.0143985565": 3,
+          "0.0172720612": 3,
+          "0.0201455659": 0,
+          "0.0230190706": 0,
+          "0.0258925753": 0,
+          "0.02876608": 17
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000410211,
+          "p25": 0.000415291,
+          "p50": 0.000420003,
+          "p75": 0.00042382,
+          "p90": 0.000427257,
+          "p95": 0.000430511,
+          "p99": 0.000839644,
+          "p99.9": 0.000858524,
+          "p99.99": 0.001274893
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.00003112": 1,
+          "0.0029047259000000002": 742204,
+          "0.0057783318000000005": 0,
+          "0.008651937700000003": 0,
+          "0.011525543600000002": 0,
+          "0.014399149500000001": 3,
+          "0.017272755400000003": 3,
+          "0.020146361300000002": 0,
+          "0.0230199672": 0,
+          "0.0258935731": 0,
+          "0.028767179": 17
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000410314,
+          "p25": 0.000415397,
+          "p50": 0.00042011,
+          "p75": 0.00042393,
+          "p90": 0.000427368,
+          "p95": 0.000430622,
+          "p99": 0.000839742,
+          "p99.9": 0.000858627,
+          "p99.99": 0.001275004
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 148406.19773384024,
+          "stddev": 5131.6632680696075,
+          "max": 150998.11857744594,
+          "min": 80767.24680969375,
+          "percentiles": {
+            "p10": 147541.57721646296,
+            "p25": 148029.86660196984,
+            "p50": 148731.3971979471,
+            "p75": 149826.15964747302,
+            "p90": 150475.4182796437,
+            "p95": 150676.33651662487,
+            "p99": 150910.19462410748,
+            "p99.9": 150998.11857744594,
+            "p99.99": 150998.11857744594
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.008892004937500001,
+            "fastest": 4.6944e-05,
+            "slowest": 0.028627234
+          },
+          "DNSLookup": {
+            "average": 6.982e-06,
+            "fastest": 1.118e-06,
+            "slowest": 2.9385e-05
+          },
+          "firstByte": {
+            "average": 0.0004282666734413161,
+            "fastest": 3.1033e-05,
+            "slowest": 0.02876608
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 742228
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 21365.684793621367,
+        "cpu_core/instructions/u": 79010.51301756334,
+        "cpu_core/branches/u": 15271.578655076337,
+        "cpu_core/branch-misses/u": 9.255922708386102
+      }
+    },
+    {
+      "case": "json-escaped",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1547108,1547109,1547110",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.005930086,
+          "slowest": 0.014088821,
+          "fastest": 3.6263e-05,
+          "average": 0.0004861443670242254,
+          "requestsPerSec": 130976.06013988586,
+          "totalData": 394049857,
+          "sizePerRequest": 601,
+          "sizePerSec": 78716612.1440714
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 130976.06013988586,
+          "latency_ms": {
+            "min": 0.036,
+            "mean": 0.486,
+            "p50": 0.475,
+            "p95": 0.606,
+            "p99": 0.629,
+            "max": 14.089
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000036263": 1,
+          "0.0014415188": 653195,
+          "0.0028467746": 0,
+          "0.0042520304000000005": 2443,
+          "0.0056572862": 0,
+          "0.007062542": 0,
+          "0.008467797800000001": 0,
+          "0.0098730536": 0,
+          "0.0112783094": 0,
+          "0.0126835652": 12,
+          "0.014088821": 6
+        },
+        "latencyPercentiles": {
+          "p10": 0.000360143,
+          "p25": 0.0003983,
+          "p50": 0.000475452,
+          "p75": 0.000552764,
+          "p90": 0.000594714,
+          "p95": 0.000606154,
+          "p99": 0.000629176,
+          "p99.9": 0.003386367,
+          "p99.99": 0.0035687
+        },
+        "firstByteHistogram": {
+          "0.000036189": 1,
+          "0.0014414337999999998": 653195,
+          "0.0028466785999999994": 0,
+          "0.004251923399999999": 2443,
+          "0.005657168199999999": 0,
+          "0.007062412999999999": 0,
+          "0.008467657799999998": 0,
+          "0.009872902599999999": 0,
+          "0.011278147399999999": 0,
+          "0.012683392199999999": 12,
+          "0.014088637": 6
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000360042,
+          "p25": 0.000398195,
+          "p50": 0.000475345,
+          "p75": 0.000552659,
+          "p90": 0.000594611,
+          "p95": 0.000606047,
+          "p99": 0.000629074,
+          "p99.9": 0.00338624,
+          "p99.99": 0.003568595
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000036263": 1,
+          "0.0014415188": 653195,
+          "0.0028467746": 0,
+          "0.0042520304000000005": 2443,
+          "0.0056572862": 0,
+          "0.007062542": 0,
+          "0.008467797800000001": 0,
+          "0.0098730536": 0,
+          "0.0112783094": 0,
+          "0.0126835652": 12,
+          "0.014088821": 6
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000360143,
+          "p25": 0.0003983,
+          "p50": 0.000475452,
+          "p75": 0.000552764,
+          "p90": 0.000594714,
+          "p95": 0.000606154,
+          "p99": 0.000629176,
+          "p99.9": 0.003386367,
+          "p99.99": 0.0035687
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 131002.48236834092,
+          "stddev": 7624.260515687107,
+          "max": 149667.3802545924,
+          "min": 74698.75521288306,
+          "percentiles": {
+            "p10": 129421.22508091347,
+            "p25": 131210.96511319707,
+            "p50": 132449.56262633283,
+            "p75": 133532.5151674442,
+            "p90": 135078.79028682315,
+            "p95": 135751.01336324136,
+            "p99": 145748.9590969927,
+            "p99.9": 149667.3802545924,
+            "p99.99": 149667.3802545924
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.0035638189062500002,
+            "fastest": 4.6737e-05,
+            "slowest": 0.013639898
+          },
+          "DNSLookup": {
+            "average": 7.024000000000002e-06,
+            "fastest": 1.056e-06,
+            "slowest": 3.0597e-05
+          },
+          "firstByte": {
+            "average": 0.00048603922913505773,
+            "fastest": 3.6189e-05,
+            "slowest": 0.014088637
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 655657
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 14915.200194613952,
+        "cpu_core/instructions/u": 56523.28849383138,
+        "cpu_core/branches/u": 13144.579103098115,
+        "cpu_core/branch-misses/u": 9.911889905850163
+      }
+    },
+    {
+      "case": "json-int64",
+      "server": "abla",
+      "binary_sha256": "4143138a517579c77ae7a5d9e1cdb0bd158acd105ae4ba5eaaac6a8f32569ccc",
+      "threads": "1547312",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.003902376,
+          "slowest": 0.021527654,
+          "fastest": 2.2898e-05,
+          "average": 0.0003126727600107272,
+          "requestsPerSec": 203222.98949662803,
+          "totalData": 103724616,
+          "sizePerRequest": 102,
+          "sizePerSec": 20728744.928656057
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 203222.98949662803,
+          "latency_ms": {
+            "min": 0.023,
+            "mean": 0.313,
+            "p50": 0.301,
+            "p95": 0.317,
+            "p99": 0.609,
+            "max": 21.528
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000022898": 1,
+          "0.0021733736": 1016870,
+          "0.0043238492": 11,
+          "0.0064743248": 0,
+          "0.0086248004": 0,
+          "0.010775276": 0,
+          "0.0129257516": 0,
+          "0.0150762272": 0,
+          "0.0172267028": 0,
+          "0.0193771784": 6,
+          "0.021527654": 20
+        },
+        "latencyPercentiles": {
+          "p10": 0.00029401,
+          "p25": 0.000297011,
+          "p50": 0.000300968,
+          "p75": 0.000305467,
+          "p90": 0.000310123,
+          "p95": 0.000316654,
+          "p99": 0.000609092,
+          "p99.9": 0.000729567,
+          "p99.99": 0.001417236
+        },
+        "firstByteHistogram": {
+          "0.00002281": 1,
+          "0.0021732474": 1016870,
+          "0.0043236848": 11,
+          "0.0064741222": 0,
+          "0.0086245596": 0,
+          "0.010774997": 0,
+          "0.0129254344": 0,
+          "0.0150758718": 0,
+          "0.0172263092": 0,
+          "0.0193767466": 6,
+          "0.021527184": 20
+        },
+        "firstBytePercentiles": {
+          "p10": 0.00029391,
+          "p25": 0.000296911,
+          "p50": 0.000300868,
+          "p75": 0.000305366,
+          "p90": 0.000310022,
+          "p95": 0.000316552,
+          "p99": 0.000608991,
+          "p99.9": 0.000729307,
+          "p99.99": 0.001417139
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000022898": 1,
+          "0.0021733736": 1016870,
+          "0.0043238492": 11,
+          "0.0064743248": 0,
+          "0.0086248004": 0,
+          "0.010775276": 0,
+          "0.0129257516": 0,
+          "0.0150762272": 0,
+          "0.0172267028": 0,
+          "0.0193771784": 6,
+          "0.021527654": 20
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.00029401,
+          "p25": 0.000297011,
+          "p50": 0.000300968,
+          "p75": 0.000305467,
+          "p90": 0.000310123,
+          "p95": 0.000316654,
+          "p99": 0.000609092,
+          "p99.9": 0.000729567,
+          "p99.99": 0.001417236
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 203764.48054470838,
+          "stddev": 13115.20990146922,
+          "max": 209389.97952841604,
+          "min": 46.19543199242469,
+          "percentiles": {
+            "p10": 201176.71362524905,
+            "p25": 202633.4142500095,
+            "p50": 205301.91186905495,
+            "p75": 207140.84817525916,
+            "p90": 207820.74050990678,
+            "p95": 208234.06709337916,
+            "p99": 209005.03702140503,
+            "p99.9": 209389.97952841604,
+            "p99.99": 209389.97952841604
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.008260098203124996,
+            "fastest": 9.2734e-05,
+            "slowest": 0.021083096
+          },
+          "DNSLookup": {
+            "average": 9.406656249999996e-06,
+            "fastest": 1.166e-06,
+            "slowest": 4.7282e-05
+          },
+          "firstByte": {
+            "average": 0.00031257160045745116,
+            "fastest": 2.281e-05,
+            "slowest": 0.021527184
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 1016908
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 11884.734117540624,
+        "cpu_core/instructions/u": 37288.54845374409,
+        "cpu_core/branches/u": 6649.133620740519,
+        "cpu_core/branch-misses/u": 1.712692790301581
+      }
+    },
+    {
+      "case": "json-int64",
+      "server": "zig",
+      "binary_sha256": "7579bf4ae2271dc9c94175857bded58db137c0fb2db3c01c46fa0309118af430",
+      "threads": "1547503,1547504,1547505",
+      "sample": {
+        "summary": {
+          "successRate": 1.0,
+          "total": 5.005889492,
+          "slowest": 0.019953826,
+          "fastest": 4.7367e-05,
+          "average": 0.00033857853952327385,
+          "requestsPerSec": 187771.82386909952,
+          "totalData": 95876430,
+          "sizePerRequest": 102,
+          "sizePerSec": 19152726.03464815
+        },
+        "metrics": {
+          "success_rate": 1.0,
+          "requests_per_sec": 187771.82386909952,
+          "latency_ms": {
+            "min": 0.047,
+            "mean": 0.339,
+            "p50": 0.329,
+            "p95": 0.41,
+            "p99": 0.449,
+            "max": 19.954
+          }
+        },
+        "responseTimeHistogram": {
+          "0.000047367": 1,
+          "0.0020380129": 937639,
+          "0.0040286588": 2172,
+          "0.0060193047": 128,
+          "0.0080099506": 0,
+          "0.0100005965": 0,
+          "0.0119912424": 0,
+          "0.013981888299999998": 0,
+          "0.0159725342": 6,
+          "0.0179631801": 0,
+          "0.019953826": 19
+        },
+        "latencyPercentiles": {
+          "p10": 0.000264849,
+          "p25": 0.000281779,
+          "p50": 0.000329497,
+          "p75": 0.000374973,
+          "p90": 0.000394469,
+          "p95": 0.000409918,
+          "p99": 0.000449485,
+          "p99.9": 0.003268242,
+          "p99.99": 0.004271376
+        },
+        "firstByteHistogram": {
+          "0.000047276": 1,
+          "0.0020378878000000002": 937639,
+          "0.0040284996": 2172,
+          "0.0060191114": 128,
+          "0.0080097232": 0,
+          "0.010000335": 0,
+          "0.0119909468": 0,
+          "0.013981558600000001": 0,
+          "0.0159721704": 6,
+          "0.0179627822": 0,
+          "0.019953394": 19
+        },
+        "firstBytePercentiles": {
+          "p10": 0.000264747,
+          "p25": 0.000281678,
+          "p50": 0.000329395,
+          "p75": 0.000374869,
+          "p90": 0.000394366,
+          "p95": 0.000409815,
+          "p99": 0.000449388,
+          "p99.9": 0.003268133,
+          "p99.99": 0.004271267
+        },
+        "responseTimeHistogramSuccessful": {
+          "0.000047367": 1,
+          "0.0020380129": 937639,
+          "0.0040286588": 2172,
+          "0.0060193047": 128,
+          "0.0080099506": 0,
+          "0.0100005965": 0,
+          "0.0119912424": 0,
+          "0.013981888299999998": 0,
+          "0.0159725342": 6,
+          "0.0179631801": 0,
+          "0.019953826": 19
+        },
+        "latencyPercentilesSuccessful": {
+          "p10": 0.000264849,
+          "p25": 0.000281779,
+          "p50": 0.000329497,
+          "p75": 0.000374973,
+          "p90": 0.000394469,
+          "p95": 0.000409918,
+          "p99": 0.000449485,
+          "p99.9": 0.003268242,
+          "p99.99": 0.004271376
+        },
+        "responseTimeHistogramNotSuccessful": {
+          "NaN": 0
+        },
+        "latencyPercentilesNotSuccessful": {
+          "p10": null,
+          "p25": null,
+          "p50": null,
+          "p75": null,
+          "p90": null,
+          "p95": null,
+          "p99": null,
+          "p99.9": null,
+          "p99.99": null
+        },
+        "rps": {
+          "mean": 187971.13247997235,
+          "stddev": 18816.715639371454,
+          "max": 213707.43701880178,
+          "min": 49.85506136559793,
+          "percentiles": {
+            "p10": 187213.16108522812,
+            "p25": 190443.4782460822,
+            "p50": 191910.72780968566,
+            "p75": 193124.8744838374,
+            "p90": 194691.3163152154,
+            "p95": 196497.10624728017,
+            "p99": 208488.74486072184,
+            "p99.9": 213707.43701880178,
+            "p99.99": 213707.43701880178
+          }
+        },
+        "details": {
+          "DNSDialup": {
+            "average": 0.007099111875000001,
+            "fastest": 9.3619e-05,
+            "slowest": 0.01949826
+          },
+          "DNSLookup": {
+            "average": 9.448812500000003e-06,
+            "fastest": 1.177e-06,
+            "slowest": 4.3113e-05
+          },
+          "firstByte": {
+            "average": 0.0003384751970371351,
+            "fastest": 4.7276e-05,
+            "slowest": 0.019953394
+          }
+        },
+        "statusCodeDistribution": {
+          "200": 939965
+        },
+        "errorDistribution": {}
+      },
+      "user_counters_per_request": {
+        "cpu_core/cycles/u": 7513.162499667541,
+        "cpu_core/instructions/u": 25133.25279026347,
+        "cpu_core/branches/u": 5675.552632278862,
+        "cpu_core/branch-misses/u": 2.3931274036799244
+      }
+    }
+  ],
+  "profile_reports": {
+    "before": {
+      "json-int64-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 12516242545\n#\n# Overhead  Command         Shared Object     Symbol                                \n# ........  ..............  ................  ......................................\n#\n     9.29%  abla-gap-final  abla-gap-final    [.] jsonNested\n     7.38%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeHostRegionAllocate\n     7.33%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readInteger\n     5.32%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldInitialize\n     5.00%  abla-gap-final  abla-gap-final    [.] jsonParseString\n     4.38%  abla-gap-final  abla-gap-final    [.] httpParseRequest\n     3.97%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeStringConcat\n     3.52%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageReserve\n     2.90%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_encodedObjectKey\n     2.86%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextFindSequence\n     2.64%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldSet\n     2.44%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_step\n     2.16%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeCopyString\n     2.14%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     2.13%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageText\n     2.00%  abla-gap-final  abla-gap-final    [.] httpEventFrame\n     1.90%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.78%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readString\n     1.76%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeObjectCreate\n     1.74%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.67%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_prepareValue\n     1.65%  abla-gap-final  abla-gap-final    [.] httpEventResponse\n     1.58%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_next\n     1.46%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_finishNested\n     1.28%  abla-gap-final  [unknown]         [k] 0xffffffff82c00080\n\n\n#\n# (Tip: To only collect call graph on one event use perf record -e cpu/cpu-cycles,callgraph=1/,branches ; perf report --show-ref-call-graph)\n#\n",
+      "json-escaped-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 16702784963\n#\n# Overhead  Command         Shared Object     Symbol                                \n# ........  ..............  ................  ......................................\n#\n    30.29%  abla-gap-final  abla-gap-final    [.] jsonParseString\n    14.20%  abla-gap-final  abla-gap-final    [.] jsonAppendString\n     5.68%  abla-gap-final  abla-gap-final    [.] jsonNested\n     5.08%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeHostRegionAllocate\n     2.83%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readInteger\n     2.61%  abla-gap-final  abla-gap-final    [.] httpParseRequest\n     2.53%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldInitialize\n     2.23%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeCopyString\n     2.19%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeStringConcat\n     1.91%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageReserve\n     1.74%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextIsValidUtf8\n     1.53%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldSet\n     1.52%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_encodedObjectKey\n     1.40%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readString\n     1.36%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_step\n     1.18%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextFindSequence\n     1.16%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.16%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_next\n     1.12%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeObjectCreate\n     1.08%  abla-gap-final  abla-gap-final    [.] httpEventFrame\n     1.02%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_prepareValue\n\n\n#\n# (Tip: To compare scalability of two workload samples use perf diff -c ratio file1 file2)\n#\n",
+      "json-escaped-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 10029245888\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    26.95%  zig-server  zig-server        [.] json.Scanner.next\n    14.91%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     8.87%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     7.43%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     5.16%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     4.37%  zig-server  zig-server        [.] json.Stringify.outputSpecialEscape\n     3.34%  zig-server  zig-server        [.] request.State.parseHeaders\n     2.37%  zig-server  zig-server        [.] main.jsonNested\n     2.34%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     2.15%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     1.58%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     1.38%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     1.33%  zig-server  [unknown]         [k] 0xffffffff82c01630\n     1.26%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     1.26%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     1.22%  zig-server  zig-server        [.] httpz.FallbackAllocator.remap\n     1.16%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     1.13%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n\n\n#\n# (Tip: Use --symfs <dir>[,layout] if your symbol files are in non-standard locations.)\n#\n",
+      "json-nested-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 13007213489\n#\n# Overhead  Command         Shared Object     Symbol                                \n# ........  ..............  ................  ......................................\n#\n    10.82%  abla-gap-final  abla-gap-final    [.] jsonNested\n     6.65%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeHostRegionAllocate\n     6.08%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldInitialize\n     5.30%  abla-gap-final  abla-gap-final    [.] jsonParseString\n     4.10%  abla-gap-final  abla-gap-final    [.] httpParseRequest\n     4.09%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readInteger\n     3.81%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageReserve\n     3.61%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeStringConcat\n     3.03%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_encodedObjectKey\n     2.71%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldSet\n     2.63%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeObjectCreate\n     2.53%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readString\n     2.47%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextFindSequence\n     2.35%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_prepareValue\n     2.24%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_step\n     2.15%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.89%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageText\n     1.86%  abla-gap-final  abla-gap-final    [.] httpEventFrame\n     1.80%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeCopyString\n     1.74%  abla-gap-final  abla-gap-final    [.] httpEventResponse\n     1.73%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_next\n     1.64%  abla-gap-final  abla-gap-final    [.] jsonAppendString\n     1.58%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_finishNested\n     1.46%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.45%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.38%  abla-gap-final  [unknown]         [k] 0xffffffff82c00080\n     1.32%  abla-gap-final  abla-gap-final    [.] extension_JsonArrayReader_next\n     1.16%  abla-gap-final  abla-gap-final    [.] extension_HttpRequest_header\n     1.02%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_integer\n\n\n#\n# (Tip: Profiling branch (mis)predictions with: perf record -b / perf report)\n#\n",
+      "json-int64-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 6943611788\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    17.03%  zig-server  zig-server        [.] json.Scanner.next\n    13.08%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     8.23%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     8.07%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     6.58%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.09%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     4.08%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     3.42%  zig-server  zig-server        [.] main.jsonNested\n     2.89%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     2.78%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     2.66%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     2.54%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     2.25%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     2.11%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     1.91%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     1.49%  zig-server  zig-server        [.] Thread.PosixThreadImpl.spawn__anon_222520.Instance.entryFn\n     1.40%  zig-server  zig-server        [.] request.State.prepareForBody\n     1.29%  zig-server  zig-server        [.] thread_pool.Worker((function 'processData')).getNext\n     1.23%  zig-server  libc.so.6         [.] __GI___writev\n     1.21%  zig-server  zig-server        [.] mem.eql__anon_3725\n     1.02%  zig-server  zig-server        [.] json.static.innerParse__anon_242572\n\n\n#\n# (Tip: Customize output of perf script with: perf script -F event,ip,sym)\n#\n",
+      "json-whitespace-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 13893823744\n#\n# Overhead  Command         Shared Object     Symbol                                \n# ........  ..............  ................  ......................................\n#\n     8.34%  abla-gap-final  abla-gap-final    [.] jsonNested\n     8.12%  abla-gap-final  abla-gap-final    [.] jsonObjectReaderExpectedRawFallback\n     6.94%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeHostRegionAllocate\n     5.04%  abla-gap-final  abla-gap-final    [.] jsonParseString\n     4.65%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldInitialize\n     4.22%  abla-gap-final  abla-gap-final    [.] httpParseRequest\n     3.95%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readInteger\n     3.27%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageReserve\n     3.15%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeStringConcat\n     3.13%  abla-gap-final  abla-gap-final    [.] extension_JsonArrayReader_next\n     3.07%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeJsonMatchCompactObjectField\n     2.51%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_encodedObjectKey\n     2.33%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_readString\n     2.29%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeFieldSet\n     2.28%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextFindSequence\n     1.98%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.90%  abla-gap-final  abla-gap-final    [.] httpEventFrame\n     1.88%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_next\n     1.87%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeObjectCreate\n     1.83%  abla-gap-final  abla-gap-final    [.] extension_HttpEventServer_step\n     1.67%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeCopyString\n     1.64%  abla-gap-final  abla-gap-final    [.] extension_ByteBuffer_stageText\n     1.48%  abla-gap-final  abla-gap-final    [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.42%  abla-gap-final  [unknown]         [k] 0xffffffff82c00080\n     1.26%  abla-gap-final  abla-gap-final    [.] httpEventResponse\n     1.20%  abla-gap-final  abla-gap-final    [.] jsonReaderConsume\n     1.12%  abla-gap-final  abla-gap-final    [.] extension_JsonEncoder_prepareValue\n     1.09%  abla-gap-final  abla-gap-final    [.] jsonScanValue\n     1.00%  abla-gap-final  abla-gap-final    [.] extension_JsonObjectReader_finishNested\n\n\n#\n# (Tip: To set sampling period of individual events use perf record -e cpu/cpu-cycles,period=100001/,cpu/branches,period=10001/ ...)\n#\n",
+      "json-whitespace-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 7520048781\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    16.79%  zig-server  zig-server        [.] json.Scanner.next\n    15.91%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n    13.30%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     6.19%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.36%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     4.32%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     4.03%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     3.61%  zig-server  zig-server        [.] main.jsonNested\n     3.37%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     2.66%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     2.44%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     2.35%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     1.84%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     1.82%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     1.71%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     1.23%  zig-server  libc.so.6         [.] __GI___writev\n     1.14%  zig-server  zig-server        [.] request.State.prepareForBody\n     1.02%  zig-server  zig-server        [.] json.static.innerParse__anon_242572\n     1.00%  zig-server  zig-server        [.] mem.eql__anon_3725\n\n\n#\n# (Tip: To adjust path to source files to local file system use perf report --prefix=... --prefix-strip=...)\n#\n",
+      "json-nested-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 7176855447\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    16.04%  zig-server  zig-server        [.] json.Scanner.next\n    14.91%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     9.33%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     6.31%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.70%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     4.54%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     3.80%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     3.24%  zig-server  zig-server        [.] main.jsonNested\n     3.14%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     3.09%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     2.96%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     2.90%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     2.58%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     1.92%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     1.89%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     1.52%  zig-server  zig-server        [.] Thread.PosixThreadImpl.spawn__anon_222520.Instance.entryFn\n     1.42%  zig-server  libc.so.6         [.] __GI___writev\n     1.25%  zig-server  zig-server        [.] mem.eql__anon_3725\n\n\n#\n# (Tip: Show user configuration overrides: perf config --user --list)\n#\n"
+    },
+    "after": {
+      "json-int64-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 11841895707\n#\n# Overhead  Command          Shared Object         Symbol                                \n# ........  ...............  ....................  ......................................\n#\n     8.38%  abla-asm-direct  abla-asm-direct-http  [.] jsonParseString\n     8.35%  abla-asm-direct  abla-asm-direct-http  [.] jsonNested\n     7.31%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readInteger\n     6.06%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldInitialize\n     5.57%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeObjectCreate\n     5.49%  abla-asm-direct  abla-asm-direct-http  [.] httpParseRequest\n     3.88%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageReserve\n     3.61%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_encodedObjectKey\n     3.05%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldSet\n     2.77%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_step\n     2.67%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextFindSequence\n     2.35%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageText\n     1.98%  abla-asm-direct  abla-asm-direct-http  [.] httpEventFrame\n     1.97%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.85%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.67%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_next\n     1.62%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeArrayCreate\n     1.62%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.52%  abla-asm-direct  [unknown]             [k] 0xffffffff82c00080\n     1.50%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_prepareValue\n     1.44%  abla-asm-direct  abla-asm-direct-http  [.] httpEventResponse\n     1.38%  abla-asm-direct  abla-asm-direct-http  [.] jsonScanValue\n     1.30%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpRequest_header\n     1.28%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_finishNested\n     1.20%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readString\n     1.16%  abla-asm-direct  abla-asm-direct-http  [.] jsonAppendString\n     1.06%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_integer\n     1.06%  abla-asm-direct  libc.so.6             [.] __memmove_avx_unaligned_erms\n     1.05%  abla-asm-direct  abla-asm-direct-http  [.] webNoEscapeRoute\n     1.01%  abla-asm-direct  abla-asm-direct-http  [.] extension_TcpConnection_writeResult\n\n\n#\n# (Tip: For parallelism histogram, try: perf report --hierarchy --sort latency,parallelism,comm,symbol)\n#\n",
+      "json-escaped-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 15645740342\n#\n# Overhead  Command          Shared Object         Symbol                                \n# ........  ...............  ....................  ......................................\n#\n    25.60%  abla-asm-direct  abla-asm-direct-http  [.] jsonParseStringFallback\n    13.62%  abla-asm-direct  abla-asm-direct-http  [.] jsonAppendEscapedNative\n     6.13%  abla-asm-direct  abla-asm-direct-http  [.] jsonNested\n     4.29%  abla-asm-direct  abla-asm-direct-http  [.] jsonParseString\n     3.61%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldInitialize\n     3.53%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeObjectCreate\n     2.66%  abla-asm-direct  abla-asm-direct-http  [.] httpParseRequest\n     2.41%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readInteger\n     1.98%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextIsValidUtf8\n     1.97%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_encodedObjectKey\n     1.89%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageReserve\n     1.62%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldSet\n     1.62%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.50%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextFindSequence\n     1.45%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageText\n     1.43%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_step\n     1.38%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_finishNested\n     1.36%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.34%  abla-asm-direct  abla-asm-direct-http  [.] httpEventFrame\n     1.08%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_next\n     1.06%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.00%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeArrayCreate\n\n\n#\n# (Tip: Treat branches as callchains: perf record -b ... ; perf report --branch-history)\n#\n",
+      "json-escaped-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 9772999118\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    27.80%  zig-server  zig-server        [.] json.Scanner.next\n    15.22%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     9.08%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     7.47%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     6.09%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     3.81%  zig-server  zig-server        [.] json.Stringify.outputSpecialEscape\n     3.47%  zig-server  zig-server        [.] request.State.parseHeaders\n     2.03%  zig-server  zig-server        [.] main.jsonNested\n     1.96%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     1.95%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     1.78%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     1.43%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     1.40%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     1.24%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     1.21%  zig-server  zig-server        [.] Thread.PosixThreadImpl.spawn__anon_222520.Instance.entryFn\n     1.19%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n\n\n#\n# (Tip: To set sample time separation other than 100ms with --sort time use --time-quantum)\n#\n",
+      "json-nested-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 12280840790\n#\n# Overhead  Command          Shared Object         Symbol                                \n# ........  ...............  ....................  ......................................\n#\n     9.61%  abla-asm-direct  abla-asm-direct-http  [.] jsonNested\n     8.42%  abla-asm-direct  abla-asm-direct-http  [.] jsonParseString\n     6.67%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldInitialize\n     5.99%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeObjectCreate\n     4.79%  abla-asm-direct  abla-asm-direct-http  [.] httpParseRequest\n     4.53%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readInteger\n     3.94%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageReserve\n     3.18%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_encodedObjectKey\n     2.86%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextFindSequence\n     2.86%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldSet\n     2.42%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_step\n     2.16%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageText\n     2.12%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeJsonMatchCompactObjectField\n     2.04%  abla-asm-direct  abla-asm-direct-http  [.] httpEventFrame\n     1.90%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.78%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_next\n     1.74%  abla-asm-direct  abla-asm-direct-http  [.] httpEventResponse\n     1.67%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readString\n     1.65%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_finishNested\n     1.59%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.56%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_prepareValue\n     1.51%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeArrayCreate\n     1.44%  abla-asm-direct  [unknown]             [k] 0xffffffff82c00080\n     1.36%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonArrayReader_next\n     1.24%  abla-asm-direct  libc.so.6             [.] __memmove_avx_unaligned_erms\n     1.14%  abla-asm-direct  abla-asm-direct-http  [.] webNoEscapeRoute\n     1.02%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpRequest_header\n\n\n#\n# (Tip: Order by the overhead of source file name and line number: perf report -s srcline)\n#\n",
+      "json-int64-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 7107247650\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    16.77%  zig-server  zig-server        [.] json.Scanner.next\n    13.23%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     8.13%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     7.80%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     6.90%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.21%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     4.21%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     4.18%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     3.63%  zig-server  zig-server        [.] main.jsonNested\n     2.68%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     2.16%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     2.09%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     2.00%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     1.96%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     1.73%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     1.71%  zig-server  [vdso]            [.] __vdso_clock_gettime\n     1.35%  zig-server  libc.so.6         [.] epoll_wait\n     1.20%  zig-server  zig-server        [.] Thread.PosixThreadImpl.spawn__anon_222520.Instance.entryFn\n     1.11%  zig-server  libc.so.6         [.] __GI___writev\n\n\n#\n# (Tip: For hierarchical output, try: perf report --hierarchy)\n#\n",
+      "json-whitespace-abla.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 4K of event 'cpu_core/cycles/u'\n# Event count (approx.): 13973992830\n#\n# Overhead  Command          Shared Object         Symbol                                \n# ........  ...............  ....................  ......................................\n#\n    10.96%  abla-asm-direct  abla-asm-direct-http  [.] jsonObjectReaderExpectedRawFallback\n    10.46%  abla-asm-direct  abla-asm-direct-http  [.] jsonNested\n     6.16%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readInteger\n     5.66%  abla-asm-direct  abla-asm-direct-http  [.] jsonParseString\n     5.21%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldInitialize\n     4.43%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeObjectCreate\n     3.73%  abla-asm-direct  abla-asm-direct-http  [.] httpParseRequest\n     3.21%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_next\n     3.02%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageReserve\n     2.36%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_encodedObjectKey\n     2.33%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextFindSequence\n     2.33%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonArrayReader_next\n     2.00%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeJsonMatchCompactObjectField\n     1.96%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeFieldSet\n     1.96%  abla-asm-direct  abla-asm-direct-http  [.] extension_ByteBuffer_stageText\n     1.83%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_readString\n     1.76%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonObjectReader_finishNested\n     1.75%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_step\n     1.70%  abla-asm-direct  abla-asm-direct-http  [.] httpEventFrame\n     1.62%  abla-asm-direct  abla-asm-direct-http  [.] httpEventResponse\n     1.50%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeArrayCreate\n     1.50%  abla-asm-direct  abla-asm-direct-http  [.] __ablaRuntimeTextAsciiEqualInsensitive\n     1.44%  abla-asm-direct  [unknown]             [k] 0xffffffff82c00080\n     1.44%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpEventServer_processNoEscapeInputInRegion\n     1.14%  abla-asm-direct  abla-asm-direct-http  [.] extension_JsonEncoder_prepareValue\n     1.14%  abla-asm-direct  abla-asm-direct-http  [.] extension_HttpRequest_header\n     1.12%  abla-asm-direct  libc.so.6             [.] __memmove_avx_unaligned_erms\n\n\n#\n# (Tip: For a higher level overview, try: perf report --sort comm,dso)\n#\n",
+      "json-whitespace-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 7569541998\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    17.52%  zig-server  zig-server        [.] json.Scanner.next\n    14.99%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n    13.09%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     6.29%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.16%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     3.57%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     3.55%  zig-server  zig-server        [.] main.jsonNested\n     3.35%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     3.30%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     3.07%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     2.89%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     2.86%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     2.13%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     2.07%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     1.51%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     1.39%  zig-server  libc.so.6         [.] __GI___writev\n     1.00%  zig-server  zig-server        [.] request.State.prepareForBody\n\n\n#\n# (Tip: Show user configuration overrides: perf config --user --list)\n#\n",
+      "json-nested-zig.txt": "# To display the perf.data header info, please use --header/--header-only options.\n#\n#\n# Total Lost Samples: 0\n#\n# Samples: 5K of event 'cpu_core/cycles/u'\n# Event count (approx.): 7090871848\n#\n# Overhead  Command     Shared Object     Symbol                                                                             \n# ........  ..........  ................  ...................................................................................\n#\n    17.54%  zig-server  zig-server        [.] json.Scanner.next\n    15.46%  zig-server  zig-server        [.] json.Scanner.nextAllocMax\n     9.55%  zig-server  zig-server        [.] json.Scanner.peekNextTokenType\n     6.78%  zig-server  zig-server        [.] request.State.parseHeaders\n     4.59%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).swapList\n     4.47%  zig-server  zig-server        [.] json.Stringify.encodeJsonString\n     3.99%  zig-server  zig-server        [.] json.static.innerParse__anon_242581\n     3.13%  zig-server  zig-server        [.] main.jsonNested\n     2.90%  zig-server  zig-server        [.] json.static.innerParse__anon_242757\n     2.69%  zig-server  [unknown]         [k] 0xffffffff82c00080\n     2.61%  zig-server  zig-server        [.] json.Scanner.skipWhitespaceCheckEnd\n     2.44%  zig-server  zig-server        [.] json.static.innerParse__anon_242561\n     2.22%  zig-server  zig-server        [.] json.Stringify.valueStartAssumeTypeOk\n     2.11%  zig-server  zig-server        [.] worker.NonBlocking(*httpz.Server(void),httpz.DummyWebsocketHandler).processData\n     2.10%  zig-server  zig-server        [.] compiler_rt.memcpy.memcpyFast\n     1.45%  zig-server  libc.so.6         [.] __GI___writev\n     1.41%  zig-server  zig-server        [.] mem.eql__anon_3725\n     1.09%  zig-server  zig-server        [.] request.State.prepareForBody\n\n\n#\n# (Tip: Save output of perf stat using: perf stat record <target workload>)\n#\n"
+    }
+  },
+  "disassembly": {
+    "jsonParseString": {
+      "before": {
+        "line_count": 4139,
+        "prologue": "\nbuild/abla-gap-final:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000038cc0 <abla_fn_545803895_134675095_direct>:\n   38cc0:\t55                   \tpush   %rbp\n   38cc1:\t41 57                \tpush   %r15\n   38cc3:\t41 56                \tpush   %r14\n   38cc5:\t41 55                \tpush   %r13\n   38cc7:\t41 54                \tpush   %r12\n   38cc9:\t53                   \tpush   %rbx\n   38cca:\t48 81 ec 28 08 00 00 \tsub    $0x828,%rsp\n   38cd1:\t49 89 f4             \tmov    %rsi,%r12\n   38cd4:\t48 89 bc 24 48 06 00 \tmov    %rdi,0x648(%rsp)\n   38cdb:\t00 \n   38cdc:\t48 8d 9c 24 a4 05 00 \tlea    0x5a4(%rsp),%rbx\n   38ce3:\t00 \n   38ce4:\t66 0f ef c0          \tpxor   %xmm0,%xmm0\n   38ce8:\t66 0f 7f 84 24 a0 05 \tmovdqa %xmm0,0x5a0(%rsp)\n   38cef:\t00 00 \n   38cf1:\t48 c7 84 24 b0 05 00 \tmovq   $0x0,0x5b0(%rsp)\n   38cf8:\t00 00 00 00 00 \n   38cfd:\t66 0f 7f 84 24 b0 03 \tmovdqa %xmm0,0x3b0(%rsp)\n   38d04:\t00 00 \n   38d06:\t48 c7 84 24 c0 03 00 \tmovq   $0x0,0x3c0(%rsp)\n   38d0d:\t00 00 00 00 00 \n   38d12:\t66 0f 7f 84 24 30 05 \tmovdqa %xmm0,0x530(%rsp)\n   38d19:\t00 00 \n   38d1b:\t48 c7 84 24 40 05 00 \tmovq   $0x0,0x540(%rsp)\n   38d22:\t00 00 00 00 00 \n   38d27:\t66 0f 7f 84 24 10 05 \tmovdqa %xmm0,0x510(%rsp)\n   38d2e:\t00 00 \n   38d30:\t48 c7 84 24 20 05 00 \tmovq   $0x0,0x520(%rsp)",
+        "sha256": "3f3d4d40bd6ea3e7a33976a9977e56744e128a06ae146506acec47fb6a0ddb50"
+      },
+      "after": {
+        "line_count": 613,
+        "prologue": "\n/home/andre/Desktop/projects/abla-compare/build/abla-asm-direct-http:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000039960 <abla_fn_545803895_134675095_direct>:\n   39960:\t55                   \tpush   %rbp\n   39961:\t41 57                \tpush   %r15\n   39963:\t41 56                \tpush   %r14\n   39965:\t41 55                \tpush   %r13\n   39967:\t41 54                \tpush   %r12\n   39969:\t53                   \tpush   %rbx\n   3996a:\t48 81 ec 78 01 00 00 \tsub    $0x178,%rsp\n   39971:\t49 89 f7             \tmov    %rsi,%r15\n   39974:\t48 89 bc 24 e8 00 00 \tmov    %rdi,0xe8(%rsp)\n   3997b:\t00 \n   3997c:\t48 8d 9c 24 c4 00 00 \tlea    0xc4(%rsp),%rbx\n   39983:\t00 \n   39984:\t66 0f ef c0          \tpxor   %xmm0,%xmm0\n   39988:\t66 0f 7f 84 24 c0 00 \tmovdqa %xmm0,0xc0(%rsp)\n   3998f:\t00 00 \n   39991:\t48 c7 84 24 d0 00 00 \tmovq   $0x0,0xd0(%rsp)\n   39998:\t00 00 00 00 00 \n   3999d:\t66 0f 7f 44 24 40    \tmovdqa %xmm0,0x40(%rsp)\n   399a3:\t48 c7 44 24 50 00 00 \tmovq   $0x0,0x50(%rsp)\n   399aa:\t00 00 \n   399ac:\t66 0f 7f 84 24 a0 00 \tmovdqa %xmm0,0xa0(%rsp)\n   399b3:\t00 00 \n   399b5:\t48 c7 84 24 b0 00 00 \tmovq   $0x0,0xb0(%rsp)\n   399bc:\t00 00 00 00 00 \n   399c1:\t66 0f 7f 84 24 80 00 \tmovdqa %xmm0,0x80(%rsp)\n   399c8:\t00 00 \n   399ca:\t48 c7 84 24 90 00 00 \tmovq   $0x0,0x90(%rsp)\n   399d1:\t00 00 00 00 00 ",
+        "sha256": "a60388b8dab3e817a630b49b923bfb8f4788ba630e62db91ef00a61ad485fd4c"
+      }
+    },
+    "jsonAppendString": {
+      "before": {
+        "line_count": 2100,
+        "prologue": "\nbuild/abla-gap-final:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000041970 <abla_fn_263406523_240713739_direct>:\n   41970:\t55                   \tpush   %rbp\n   41971:\t41 57                \tpush   %r15\n   41973:\t41 56                \tpush   %r14\n   41975:\t41 55                \tpush   %r13\n   41977:\t41 54                \tpush   %r12\n   41979:\t53                   \tpush   %rbx\n   4197a:\t48 81 ec f8 03 00 00 \tsub    $0x3f8,%rsp\n   41981:\t49 89 f6             \tmov    %rsi,%r14\n   41984:\t48 89 fb             \tmov    %rdi,%rbx\n   41987:\t66 0f ef c0          \tpxor   %xmm0,%xmm0\n   4198b:\t66 0f 7f 84 24 70 03 \tmovdqa %xmm0,0x370(%rsp)\n   41992:\t00 00 \n   41994:\t48 c7 84 24 80 03 00 \tmovq   $0x0,0x380(%rsp)\n   4199b:\t00 00 00 00 00 \n   419a0:\t66 0f 7f 84 24 20 03 \tmovdqa %xmm0,0x320(%rsp)\n   419a7:\t00 00 \n   419a9:\t48 c7 84 24 30 03 00 \tmovq   $0x0,0x330(%rsp)\n   419b0:\t00 00 00 00 00 \n   419b5:\t66 0f 7f 84 24 00 03 \tmovdqa %xmm0,0x300(%rsp)\n   419bc:\t00 00 \n   419be:\t48 c7 84 24 10 03 00 \tmovq   $0x0,0x310(%rsp)\n   419c5:\t00 00 00 00 00 \n   419ca:\t48 89 bc 24 c8 03 00 \tmov    %rdi,0x3c8(%rsp)\n   419d1:\t00 \n   419d2:\t48 89 b4 24 d0 03 00 \tmov    %rsi,0x3d0(%rsp)\n   419d9:\t00 \n   419da:\t48 8d 84 24 58 03 00 \tlea    0x358(%rsp),%rax\n   419e1:\t00 ",
+        "sha256": "d47eaa3ef207594e16e716888d6be96d57436049b8f173e6411c1e5f8901a81f"
+      },
+      "after": {
+        "line_count": 421,
+        "prologue": "\n/home/andre/Desktop/projects/abla-compare/build/abla-asm-direct-http:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n000000000003e9e0 <abla_fn_263406523_240713739_direct>:\n   3e9e0:\t55                   \tpush   %rbp\n   3e9e1:\t41 57                \tpush   %r15\n   3e9e3:\t41 56                \tpush   %r14\n   3e9e5:\t41 55                \tpush   %r13\n   3e9e7:\t41 54                \tpush   %r12\n   3e9e9:\t53                   \tpush   %rbx\n   3e9ea:\t48 81 ec 68 01 00 00 \tsub    $0x168,%rsp\n   3e9f1:\t49 89 f6             \tmov    %rsi,%r14\n   3e9f4:\t48 89 fb             \tmov    %rdi,%rbx\n   3e9f7:\t0f 57 c0             \txorps  %xmm0,%xmm0\n   3e9fa:\t0f 29 84 24 20 01 00 \tmovaps %xmm0,0x120(%rsp)\n   3ea01:\t00 \n   3ea02:\t48 c7 84 24 30 01 00 \tmovq   $0x0,0x130(%rsp)\n   3ea09:\t00 00 00 00 00 \n   3ea0e:\t0f 29 84 24 d0 00 00 \tmovaps %xmm0,0xd0(%rsp)\n   3ea15:\t00 \n   3ea16:\t48 c7 84 24 e0 00 00 \tmovq   $0x0,0xe0(%rsp)\n   3ea1d:\t00 00 00 00 00 \n   3ea22:\t0f 29 84 24 b0 00 00 \tmovaps %xmm0,0xb0(%rsp)\n   3ea29:\t00 \n   3ea2a:\t48 c7 84 24 c0 00 00 \tmovq   $0x0,0xc0(%rsp)\n   3ea31:\t00 00 00 00 00 \n   3ea36:\t48 89 bc 24 38 01 00 \tmov    %rdi,0x138(%rsp)\n   3ea3d:\t00 \n   3ea3e:\t48 89 b4 24 40 01 00 \tmov    %rsi,0x140(%rsp)\n   3ea45:\t00 \n   3ea46:\t48 8d 84 24 08 01 00 \tlea    0x108(%rsp),%rax\n   3ea4d:\t00 ",
+        "sha256": "80a33f80dc00d2031126de10c4cab1635710ebf0923fecceb5aaa4e41dc37bdd"
+      }
+    },
+    "extension_JsonObjectReader_readInteger": {
+      "before": {
+        "line_count": 933,
+        "prologue": "\nbuild/abla-gap-final:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n00000000000374d0 <abla_fn_109009062_998426280_direct>:\n   374d0:\t55                   \tpush   %rbp\n   374d1:\t41 57                \tpush   %r15\n   374d3:\t41 56                \tpush   %r14\n   374d5:\t41 55                \tpush   %r13\n   374d7:\t41 54                \tpush   %r12\n   374d9:\t53                   \tpush   %rbx\n   374da:\t48 81 ec 48 02 00 00 \tsub    $0x248,%rsp\n   374e1:\t49 89 fe             \tmov    %rdi,%r14\n   374e4:\t4c 8d 64 24 64       \tlea    0x64(%rsp),%r12\n   374e9:\t66 0f ef c0          \tpxor   %xmm0,%xmm0\n   374ed:\t66 0f 7f 44 24 60    \tmovdqa %xmm0,0x60(%rsp)\n   374f3:\t48 c7 44 24 70 00 00 \tmovq   $0x0,0x70(%rsp)\n   374fa:\t00 00 \n   374fc:\t4c 8d bc 24 e4 00 00 \tlea    0xe4(%rsp),%r15\n   37503:\t00 \n   37504:\t66 0f 7f 84 24 e0 00 \tmovdqa %xmm0,0xe0(%rsp)\n   3750b:\t00 00 \n   3750d:\t48 c7 84 24 f0 00 00 \tmovq   $0x0,0xf0(%rsp)\n   37514:\t00 00 00 00 00 \n   37519:\t66 0f 7f 04 24       \tmovdqa %xmm0,(%rsp)\n   3751e:\t48 c7 44 24 10 00 00 \tmovq   $0x0,0x10(%rsp)\n   37525:\t00 00 \n   37527:\t66 0f 7f 84 24 c0 00 \tmovdqa %xmm0,0xc0(%rsp)\n   3752e:\t00 00 \n   37530:\t48 c7 84 24 d0 00 00 \tmovq   $0x0,0xd0(%rsp)\n   37537:\t00 00 00 00 00 \n   3753c:\t66 0f 7f 84 24 a0 00 \tmovdqa %xmm0,0xa0(%rsp)\n   37543:\t00 00 ",
+        "sha256": "2a2a059985720232b4c7f73d26960383f81bb2e466c95ea652abd637ead723bf"
+      },
+      "after": {
+        "line_count": 504,
+        "prologue": "\n/home/andre/Desktop/projects/abla-compare/build/abla-asm-direct-http:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000038890 <abla_fn_109009062_998426280_direct>:\n   38890:\t55                   \tpush   %rbp\n   38891:\t41 57                \tpush   %r15\n   38893:\t41 56                \tpush   %r14\n   38895:\t41 55                \tpush   %r13\n   38897:\t41 54                \tpush   %r12\n   38899:\t53                   \tpush   %rbx\n   3889a:\t48 81 ec 18 01 00 00 \tsub    $0x118,%rsp\n   388a1:\t66 0f ef c0          \tpxor   %xmm0,%xmm0\n   388a5:\t66 0f 7f 04 24       \tmovdqa %xmm0,(%rsp)\n   388aa:\t48 c7 44 24 10 00 00 \tmovq   $0x0,0x10(%rsp)\n   388b1:\t00 00 \n   388b3:\t66 0f 7f 44 24 40    \tmovdqa %xmm0,0x40(%rsp)\n   388b9:\t48 c7 44 24 50 00 00 \tmovq   $0x0,0x50(%rsp)\n   388c0:\t00 00 \n   388c2:\t66 0f 7f 44 24 20    \tmovdqa %xmm0,0x20(%rsp)\n   388c8:\t48 c7 44 24 30 00 00 \tmovq   $0x0,0x30(%rsp)\n   388cf:\t00 00 \n   388d1:\t66 0f 7f 84 24 90 00 \tmovdqa %xmm0,0x90(%rsp)\n   388d8:\t00 00 \n   388da:\t48 c7 84 24 a0 00 00 \tmovq   $0x0,0xa0(%rsp)\n   388e1:\t00 00 00 00 00 \n   388e6:\t48 89 bc 24 c8 00 00 \tmov    %rdi,0xc8(%rsp)\n   388ed:\t00 \n   388ee:\t48 8d 44 24 78       \tlea    0x78(%rsp),%rax\n   388f3:\t48 89 84 24 d0 00 00 \tmov    %rax,0xd0(%rsp)\n   388fa:\t00 \n   388fb:\t48 8d 44 24 60       \tlea    0x60(%rsp),%rax\n   38900:\t48 89 84 24 d8 00 00 \tmov    %rax,0xd8(%rsp)",
+        "sha256": "4d938bdb24f992ba7a4730a3a89d192a17f10c12aa1a5cb4b32b910ac5280785"
+      }
+    }
+  },
+  "notes": [
+    "Perf measures server-only user-space counters; kernel work is excluded.",
+    "One P-core and 64 connections for perf; eight P-cores and 256 connections for throughput.",
+    "Counter/load windows are approximately synchronized; counters and samples use separate five-second loads.",
+    "All existing server threads are attached by TID; the load generator is excluded.",
+    "Field-matcher forced inlining, four-byte matching, next-member outlining, and generic buffered HTTP formatting were discarded.",
+    "No compiler build or correctness test ran during timed benchmarks.",
+    "Source is committed only on the local performance worktree; master was not pushed."
+  ]
+}

@@ -283,8 +283,8 @@ self-rebuild, and fragmented/pipelined HTTP with a slow reader.
 [Final nine-case table](results/2026-10-20-gap-final.csv) compares the prior
 retained patch (`135feca`) with `83b13ac`, plus Zig/httpz. The candidate removes
 duplicate escaped-prefix scans, reserves short quoted strings once, avoids
-intermediate cursor writes, simplifies byte-scanning loops, and specializes
-constant field-name matching while keeping diagnostics out of line.
+intermediate cursor writes, simplifies byte-scanning loops, and inlines
+the expected-field reader wrapper while keeping diagnostics out of line.
 
 Nested JSON improves another 3.11%, to 1.461M req/s versus Zig's 1.501M
 (2.64% behind). Whitespace-heavy JSON improves 4.26%, to 1.348M versus 1.445M
@@ -307,3 +307,78 @@ given the small sample count and desktop noise.
 JSON agreement, the fresh compiler fixed point, and HTTP response checks.
 The compiler changes remain local on `perf/json-comparison`; no release was
 published as part of this benchmark work.
+
+
+### Instruction-guided JSON improvements (2026-10-20)
+
+The next local candidate is compiler commit `8ad4a17` on
+`perf/json-comparison`, measured against `83b13ac` and the same Zig binary.
+Linux `perf` and symbol-resolved disassembly identified three avoidable costs:
+
+- Successful JSON reads and writes inherited large GC-root stack frames from
+  inlined diagnostic and portable fallback code. Outlining that code reduces
+  the integer-reader stack allocation from 584 to 280 bytes, the string reader
+  from 2,088 to 376, and the string writer from 1,016 to 360.
+- Outlining region page acquisition lets LLVM inline the smaller bump-allocation
+  path. Allocation semantics and collection rules are unchanged.
+- HTTP response framing built temporary immutable strings and ropes. The native
+  path now calculates the response size and copies headers and body into one
+  allocation. The compile-time path keeps the portable formatter.
+
+Forced field-matcher inlining and four-byte field matching did not produce a
+reliable throughput gain and were discarded. Zig's whitespace scanner is scalar;
+these measurements do not support attributing its advantage to SIMD. Abla still
+has more object/field bookkeeping and executes more instructions per request.
+
+The four-round confirmation puts nested JSON 1.93% ahead of Zig, escaped JSON
+1.02% ahead, and int64 JSON effectively tied (+0.13%). Whitespace remains 1.45%
+behind. Relative to the previous Abla patch, these cases improve 4.21–5.87%.
+All four p99 medians are lower than Zig's; escaped JSON p99 rises slightly
+versus the prior Abla patch (0.527 to 0.537 ms). This closes most of the observed
+gap, but does not establish a statistically significant win on every case.
+
+The regression matrix retains the array, roles, Unicode, and long-string
+throughput leads over Zig. Plaintext (-0.24%) and 64 KiB body (-0.87%) throughput
+are within 1% of the previous Abla build. The 128-item array improves throughput
+5.70%, but its p99 rises 6% (1.265 to 1.341 ms); Zig's p99 is 2.925 ms. All eleven
+candidate p99 medians are below Zig's in this run. The two-sample regression
+results, especially large-body Zig throughput, should not be overgeneralized.
+
+The [full table](results/2026-10-20-asm-final.csv) reports requests per second and
+p99 for baseline Abla, candidate Abla, and Zig. The four previously trailing
+cases use four eight-second samples per server; the regression cases use two
+five-second samples. Both use one-second warmup, eight physical P-cores for the
+server, 16 E-core load-generator workers and 256 connections, reversing server
+order between rounds. Values are medians of per-run measurements; p99 is not a
+pooled percentile. Small differences remain sensitive to desktop noise.
+
+[Final samples](results/2026-10-20-asm-final.json),
+[regression samples](results/2026-10-20-asm-regression.json), and
+[validation and profiling evidence](results/2026-10-20-asm-validation.json)
+include binary hashes and the exact configuration. `diagnostics/profile_json.py`
+collects server-only user-space counters on one P-core with 64 connections,
+attaching to every existing server thread. Counters and cycle samples use
+separate five-second loads; start/stop windows are approximate. They exclude
+kernel work and must not be treated as the eight-core throughput measurements.
+
+Measured user-space instructions per successful request:
+
+| Case | Previous Abla | Candidate Abla | Zig |
+| --- | ---: | ---: | ---: |
+| Nested | 43,062 | 38,310 | 25,718 |
+| Whitespace | 51,103 | 45,722 | 27,841 |
+| Escaped | 85,016 | 79,011 | 56,523 |
+| Int64 | 41,781 | 37,289 | 25,133 |
+
+These are whole HTTP-request counts, not isolated parser counts. The reduction
+is 7–11%; the remaining instruction gap includes object/field and GC bookkeeping.
+Branch misses were low in both implementations. Similar saturated HTTP
+throughput does not mean that CPU cost per request is identical.
+
+Validation passed: 89 suite tests, native and Wasm JSON/UTF-8 checks, GC stress
+(including the JSON fixture), scoped-region and runtime-memory checks, a fresh
+release-style compiler self-rebuild with byte-identical IR, all 21 exact-response
+checks, and fragmented/pipelined HTTP with a slow reader. New framing assertions
+cover HEAD, supplied Content-Length, case-insensitive Connection filtering, and
+101 responses. The patch is committed locally; master and the installed release
+remain unchanged.
