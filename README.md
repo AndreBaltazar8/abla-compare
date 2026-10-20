@@ -14,6 +14,17 @@ headers-32      GET with 32 request headers and five spread-out lookups
 route-fanout-1024  GET a literal target registered after 1,024 literal decoys
 query-32-named     GET 32 shuffled query fields and retrieve eight by name
 json-nested        POST a compact nested schema and serialize a derived JSON object
+json-empty         JSON with empty item and role arrays
+json-items-128     JSON with 128 item objects
+json-roles-64      JSON with 64 role strings
+json-whitespace    The nested schema with pretty-printed whitespace
+json-escaped       Repeated quotes, backslashes, newlines and tabs
+json-unicode       Unicode escapes, including surrogate pairs, decoded to UTF-8
+json-strings-4k    A 4 KiB output string and a 4 KiB ignored string
+json-int64         Signed 64-bit boundaries and a negative total
+body-128          Echo a 128-byte binary body
+body-1k           Echo a 1 KiB binary body
+body-64k          Echo a 64 KiB binary body
 ```
 
 The goal is a repeatable engineering baseline, not a universal language
@@ -29,7 +40,7 @@ it pins the server to isolated physical CPUs and the load generator to the
 remaining CPUs.
 
 ```sh
-nix-shell -p oha zig --run 'python3 benchmark.py'
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/6510408d147d8c5e6d76043e899e9251756f6a75.tar.gz -p oha zig --run 'python3 benchmark.py'
 ```
 
 Raw results are written to `results/latest.json` (ignored by Git). Useful knobs:
@@ -47,11 +58,36 @@ The defaults assume this repository is beside `../ablac`. Set `ABLAC` to use a
 different compiler, `OHA` to use a specific load-generator binary, and `ZIG` to
 use a specific Zig compiler.
 
+For candidate work, keep separate baseline and candidate Abla binaries. The
+stress diagnostic reverses server order each round, validates exact responses, records
+binary hashes and retains every sample:
+
+```sh
+python3 diagnostics/compare_stress.py \
+  --baseline build/abla-stress-baseline --candidate build/abla-stress-candidate \
+  --output results/stress.json
+python3 diagnostics/test_http_streaming.py build/abla-stress-candidate
+```
+
+Run the comparison inside the pinned shell above. The diagnostic defaults to
+eight server cores and 16 client CPUs on the development machine; override
+`--server-cpus`, `--client-cpus`, `--workers` and `--connections` on other hosts.
+Abla v0.2.19 rejects the valid `json-whitespace` request. When comparing that
+baseline, `--allow-baseline-validation-failures` records its rejection without
+assigning it a throughput result; candidate and Zig failures still abort.
+
 ## Fairness notes
 
 - All servers expose byte-for-byte equivalent responses for every scenario;
   the harness validates them before load generation.
-- All measurements use HTTP/1.1 keep-alive and 64 concurrent connections.
+- All measurements use HTTP/1.1 keep-alive and 64 concurrent connections by default.
+- The load generator's worker-thread count matches its assigned CPU count and
+  is recorded as `oha_worker_threads`. `oha` otherwise defaults to the physical
+  core count of the entire machine, ignoring the narrower client affinity.
+  That oversubscription can inflate measured tail latency for fast servers.
+  Earlier results without this field do not record that setting and may
+  include client-scheduling delay; do not compare their tail-latency numbers
+  directly with corrected runs.
 - Release builds are used: Abla's production optimization pipeline, stripped Go,
   Rust `--release` with thin LTO, and Zig `ReleaseFast`.
 - The Zig server uses the pure-Zig, nonblocking
@@ -88,6 +124,10 @@ use a specific Zig compiler.
   canonical-order streaming reader, while Go, Rust, and Zig use typed schema
   decoders. The fixed field order is part of that benchmark contract; this is
   not a claim that the Abla handler accepts arbitrarily reordered JSON.
+- JSON stress cases retain that schema and field order, varying only payload
+  characteristics. They reuse the existing handler rather than adding
+  benchmark-specific parsing shortcuts. JSON and binary echo routes accept
+  bodies up to 64 KiB in the Abla benchmark server.
 
 ## Layout
 
@@ -204,3 +244,35 @@ round 27. It retains only behavior-preserving general changes and records the
 final same-condition comparison after full compiler and JSON validation. Abla
 reaches 1,199,986 requests/second, 97.18% of Zig and 5.44% ahead of Rust, while
 keeping a substantially lower p99 than Zig in that run.
+
+
+### Expanded JSON and body stress matrix (2026-10-20)
+
+The [21-case results](results/2026-10-20-expanded-final.csv) compare the
+v0.2.19 library with compiler commit `135feca` on branch
+`perf/json-comparison`, and Zig 0.16.0/httpz. The Abla application body limit
+is 64 KiB in both builds, matching Zig. This is a local candidate, not a release.
+The general library changes improve escaped JSON from 357K to 1.025M req/s,
+Unicode JSON from 475K to 808K, and 64 KiB echo from 65K to 306K. Zig reaches
+1.089M, 804K and 165K respectively. The 64 KiB p99 drops from 8.41 to 1.47 ms
+(Zig: 5.02 ms). Compact nested JSON and whitespace-heavy JSON remain behind Zig;
+this does not establish language-wide superiority. The old library rejects
+the valid whitespace fixture, so that baseline has no timing result.
+
+Conditions: i9-13900K, eight physical P-cores for each server, 16 E-core client
+threads, 256 connections, one-second warmup and two three-second samples.
+Numbers are medians of per-run throughput and p99, not a pooled percentile.
+The initial matrix always ran baseline first, then alternated candidate/Zig;
+small differences can reflect order and desktop noise. The
+[longer confirmation](results/2026-10-20-noinline-confirmation.csv) uses
+five-second samples and fully reversed server order. In its raw JSON,
+`baseline` is the retained patch and `candidate` is an out-of-line escaped-reader
+experiment that was discarded because it did not close the compact-JSON gap.
+
+[Raw measurements](results/2026-10-20-expanded-final.json),
+[confirmation measurements](results/2026-10-20-noinline-confirmation.json) and
+[validation/provenance](results/2026-10-20-expanded-validation.json) record
+binary hashes, configuration and checks. Validation includes all 89 suite tests
+(after correcting one launcher setup failure), JSON/UTF-8 Wasm checks, 84
+exact-response checks across Abla/Go/Rust/Zig, a byte-identical compiler
+self-rebuild, and fragmented/pipelined HTTP with a slow reader.

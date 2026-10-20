@@ -126,6 +126,69 @@ SCENARIOS = {
 }
 
 
+def json_stress_cases() -> dict[str, bytes]:
+    """Same schema/handler, different parser and serializer pressure."""
+    result: dict[str, bytes] = {}
+    for name in ("json-empty", "json-items-128", "json-roles-64",
+                 "json-whitespace", "json-escaped", "json-unicode",
+                 "json-strings-4k", "json-int64"):
+        value = json.loads(JSON_NESTED)
+        if name == "json-empty":
+            value["items"] = []
+            value["user"]["roles"] = []
+        elif name == "json-items-128":
+            value["items"] = [dict(sku=f"item-{i}", qty=i % 7 + 1, price=125 + i)
+                              for i in range(128)]
+        elif name == "json-roles-64":
+            value["user"]["roles"] = [f"role-{i}" for i in range(64)]
+        elif name == "json-escaped":
+            value["user"]["name"] = ('quote" slash\\ newline\n tab\t' * 16)
+            value["request_id"] = 'request"\\\n'
+        elif name == "json-unicode":
+            value["user"]["name"] = "André 日本語 🌍" * 32
+            value["user"]["roles"][0] = "管理者"
+        elif name == "json-strings-4k":
+            value["user"]["name"] = "abcdefgh" * 512
+            value["note"] = "payload-" * 512
+        elif name == "json-int64":
+            value["user"]["id"] = 9223372036854775807
+            value["items"] = [dict(sku="large", qty=1, price=9223372036854775807),
+                              dict(sku="negative", qty=1, price=-9223372036854775808)]
+        body = json.dumps(value, ensure_ascii=name == "json-unicode",
+                          indent=2 if name == "json-whitespace" else None,
+                          separators=None if name == "json-whitespace" else (",", ":")).encode()
+        expected = dict(active=value["active"], item_count=len(value["items"]),
+                        primary_role=next(iter(value["user"]["roles"]), ""),
+                        request_id=value["request_id"],
+                        total=sum(item["qty"] * item["price"] for item in value["items"]),
+                        user=value["user"]["name"])
+        SCENARIOS[name] = Scenario(name, "POST", "/json-nested",
+                                  json.dumps(expected, ensure_ascii=False, separators=(",", ":")).encode(),
+                                  ("Content-Type: application/json",), BUILD / (name + ".json"),
+                                  "application/json")
+        result[name] = body
+    return result
+
+
+JSON_STRESS_BODIES = json_stress_cases()
+
+BODY_STRESS_BODIES = {}
+for body_name, body_size in (("body-128", 128), ("body-1k", 1024), ("body-64k", 65536)):
+    body = (bytes(range(256)) * ((body_size + 255) // 256))[:body_size]
+    BODY_STRESS_BODIES[body_name] = body
+    SCENARIOS[body_name] = Scenario(body_name, "POST", "/body", body,
+                                   ("Content-Type: application/octet-stream",),
+                                   BUILD / (body_name + ".bin"), "application/octet-stream")
+
+
+def prepare_payloads() -> None:
+    BUILD.mkdir(exist_ok=True)
+    BODY_16K_PATH.write_bytes(BODY_16K)
+    JSON_NESTED_PATH.write_bytes(JSON_NESTED)
+    for name, body in (JSON_STRESS_BODIES | BODY_STRESS_BODIES).items():
+        SCENARIOS[name].body_path.write_bytes(body)
+
+
 @dataclass(frozen=True)
 class Server:
     name: str
@@ -163,9 +226,7 @@ def find_zig() -> str:
 
 
 def build_servers() -> list[Server]:
-    BUILD.mkdir(exist_ok=True)
-    BODY_16K_PATH.write_bytes(BODY_16K)
-    JSON_NESTED_PATH.write_bytes(JSON_NESTED)
+    prepare_payloads()
     compiler = compiler_path()
     if not compiler.exists():
         raise SystemExit(f"Abla compiler not found at {compiler}; set ABLAC to override")
@@ -362,9 +423,12 @@ def start_servers(
     count = workers if server.name == "abla" else 1
     command = [str(server.executable), str(port)]
     environment = os.environ.copy()
-    environment["ABLA_COMPARE_SCENARIO"] = scenario.name
+    handler_scenario = "json-nested" if scenario.name in JSON_STRESS_BODIES else scenario.name
+    if scenario.name in BODY_STRESS_BODIES:
+        handler_scenario = "body-16k"
+    environment["ABLA_COMPARE_SCENARIO"] = handler_scenario
     if server.name == "abla":
-        command.append(scenario.name)
+        command.append(handler_scenario)
     elif server.name == "go":
         environment["GOMAXPROCS"] = str(workers)
     elif server.name == "rust":
@@ -414,6 +478,11 @@ def oha_run(
         "-c",
         str(connections),
     ]
+    # oha's default counts physical cores on the whole host, not the CPU
+    # affinity applied below. Oversubscribing the client introduces scheduler
+    # delays into its latency measurements, especially for the fastest servers.
+    if client_cpus:
+        command.extend(["--worker-threads", str(len(client_cpus))])
     if scenario.method != "GET":
         command.extend(["--method", scenario.method])
     for header_value in scenario.headers:
@@ -459,6 +528,7 @@ def machine_metadata() -> dict[str, Any]:
         "zig": version([find_zig(), "version"]),
         "oha": version([find_oha(), "--version"]),
         "abla_compiler": str(compiler_path()),
+        "abla_version": version([str(compiler_path()), "--version"]),
     }
 
 
@@ -479,6 +549,7 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
     if server_cpus & client_cpus:
         raise SystemExit("server and client CPU sets must not overlap")
 
+    prepare_payloads()
     selected_scenarios = (
         list(SCENARIOS.values())
         if args.scenario == "all"
@@ -529,6 +600,7 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             ),
             "server_cpus": sorted(server_cpus),
             "client_cpus": sorted(client_cpus),
+            "oha_worker_threads": len(client_cpus) if client_cpus else None,
         },
         "machine": machine_metadata(),
         "scenarios": {},

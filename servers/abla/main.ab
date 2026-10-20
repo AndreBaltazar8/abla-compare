@@ -233,7 +233,7 @@ fun main: int {
     // short-lived programs that never touch this API omit the collector.
     memorySetLimit(memoryLimit())
     val scenario = benchmarkScenario()
-    val maximumBody = if (scenario == "body-16k") 65536 else 1024
+    val maximumBody = if (scenario == "body-16k" || scenario == "json-nested") 65536 else 1024
     val options = HttpEventServerOptions(
         4096,
         16384,
