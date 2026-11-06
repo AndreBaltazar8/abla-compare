@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
 import math
 import os
@@ -374,22 +375,35 @@ def wait_until_ready(
                     "server worker exited during startup with status "
                     f"{process.returncode}"
                 )
+        connection = http.client.HTTPConnection("127.0.0.1", port, timeout=0.5)
         try:
-            with urllib.request.urlopen(
-                request_for_scenario(port, scenario), timeout=0.5
-            ) as response:
-                body = response.read()
-                content_type = response.headers.get_content_type()
-                if response.status != 200 or body != scenario.expected_body:
-                    raise RuntimeError(
-                        f"unexpected response: status={response.status}, body={body!r}"
-                    )
-                if content_type != scenario.expected_content_type:
-                    raise RuntimeError(f"unexpected content type: {content_type}")
-                return
-        except (OSError, urllib.error.URLError) as error:
+            request = request_for_scenario(port, scenario)
+            headers = dict(request.header_items())
+            headers["Connection"] = "keep-alive"
+            # urllib requests Connection: close, which can hide broken streaming
+            # echoes. Validate two full responses on one persistent connection.
+            for _ in range(2):
+                connection.request(
+                    scenario.method, scenario.target, body=request.data, headers=headers
+                )
+                with connection.getresponse() as response:
+                    body = response.read()
+                    content_type = response.headers.get_content_type()
+                    if response.status != 200 or body != scenario.expected_body:
+                        raise RuntimeError(
+                            f"unexpected response: status={response.status}, "
+                            f"expected {len(scenario.expected_body)} bytes, got {len(body)}"
+                        )
+                    if content_type != scenario.expected_content_type:
+                        raise RuntimeError(f"unexpected content type: {content_type}")
+                    if response.will_close or connection.sock is None:
+                        raise RuntimeError("server closed the keep-alive connection")
+            return
+        except (OSError, http.client.HTTPException, urllib.error.URLError) as error:
             last_error = error
             time.sleep(0.05)
+        finally:
+            connection.close()
     raise RuntimeError(f"server did not become ready: {last_error}")
 
 

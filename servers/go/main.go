@@ -159,6 +159,11 @@ func main() {
 		_, _ = fmt.Fprintf(response, "%s:%s:%s\n", value.ID, value.Name, value.Tier)
 	})))
 	mux.HandleFunc("POST /body", func(response http.ResponseWriter, request *http.Request) {
+		// Preserve the unread upload while io.Copy streams the echo response.
+		if err := http.NewResponseController(response).EnableFullDuplex(); err != nil {
+			http.Error(response, "full-duplex echo unavailable", http.StatusInternalServerError)
+			return
+		}
 		response.Header().Set("Content-Type", "application/octet-stream")
 		_, _ = io.Copy(response, request.Body)
 	})
