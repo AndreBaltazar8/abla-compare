@@ -141,6 +141,41 @@ assigning it a throughput result; candidate and Zig failures still abort.
 
 ## Current baseline
 
+The [November 6 one-worker results](results/2026-11-06-i9-13900k.md) and
+[new six-worker baseline](results/2026-11-06-i9-13900k-6-workers.md) cover all
+21 scenarios, all four languages, and three ten-second repetitions. Abla uses
+release compiler stage 2 of `f6aeaebb` (the approved master snapshot); full
+compiler, binary, dependency, CPU and load provenance is included in the raw JSON.
+
+| Scenario | Abla, 1 worker | Abla / best peer | Abla, 6 workers | Abla / best peer |
+| --- | ---: | ---: | ---: | ---: |
+| plaintext | 333,399 req/s | 120.4% | 1,717,173 req/s | 128.5% |
+| parameters | 276,924 req/s | 89.9% | 1,662,152 req/s | 132.6% |
+| headers-32 | 217,171 req/s | 85.1% | 1,171,855 req/s | 108.2% |
+| json-strings-4k | 91,781 req/s | 75.9% | 518,477 req/s | 82.7% |
+
+Abla has the highest median in 17/21 one-worker scenarios (Unicode JSON is
+effectively tied) and 20/21 six-worker scenarios. JSON strings remain the gap at
+both worker counts; the profiles identify scalar string scanning as the main
+Abla cost. The one-worker header and parameter gaps remain follow-up targets.
+These are measurements of the recorded workloads, not a universal language ranking.
+
+The one-worker run uses 64 connections. The six-worker run uses 256 connections
+and six P-cores; CPU 12/13 were offline, leaving seven physical P-cores available.
+No CPU configuration was changed. Coordinated quiet windows held the shared
+build/test slots; residual load and every repetition are retained. October's
+eight-worker figures use a different topology and are not directly comparable.
+
+The Go streaming echo now enables full duplex. The earlier keep-alive handler
+returned only 512 bytes for larger bodies despite HTTP 200. Those original
+November samples remain in the raw JSON, explicitly invalidated; the comparison
+uses separate corrected-Go reruns with complete body counts. October's Go
+16 KiB echo samples also returned 512 bytes and are invalid as full-body
+comparisons. The preflight now checks two exact responses on one persistent
+connection; all four servers pass the body-echo regression.
+
+### Earlier measurements
+
 The original broken baseline is recorded in
 [`results/2026-08-10-i9-13900k.md`](results/2026-08-10-i9-13900k.md). The
 optimized result and sustained-memory verification are in
