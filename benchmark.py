@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import http.client
+import hashlib
 import json
 import math
 import os
@@ -617,6 +618,10 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
             "oha_worker_threads": len(client_cpus) if client_cpus else None,
         },
         "machine": machine_metadata(),
+        "binary_sha256": {server.name: hashlib.sha256(server.executable.read_bytes()).hexdigest()
+                          for server in servers},
+        "harness_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "server_order": [server.name for server in servers],
         "scenarios": {},
     }
 
@@ -658,7 +663,8 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
                     client_cpus,
                     scenario,
                 )
-                if warmup["summary"]["successRate"] != 1.0:
+                if (warmup["summary"]["successRate"] != 1.0 or warmup["errorDistribution"]
+                        or set(warmup["statusCodeDistribution"]) != {"200"}):
                     raise RuntimeError(
                         f"{scenario.name}/{server.name} warm-up had request failures"
                     )
@@ -672,7 +678,8 @@ def benchmark(args: argparse.Namespace, servers: list[Server]) -> dict[str, Any]
                         client_cpus,
                         scenario,
                     )
-                    if sample["summary"]["successRate"] != 1.0:
+                    if (sample["summary"]["successRate"] != 1.0 or sample["errorDistribution"]
+                            or set(sample["statusCodeDistribution"]) != {"200"}):
                         raise RuntimeError(
                             f"{scenario.name}/{server.name} repetition "
                             f"{repetition} had failures"

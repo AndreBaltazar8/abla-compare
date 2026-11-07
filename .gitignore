@@ -1,5 +1,6 @@
 /build/
-/__pycache__/
+__pycache__/
+*.py[cod]
 /.abla/
 /results/*.json
 /servers/rust/target/
