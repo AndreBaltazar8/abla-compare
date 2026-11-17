@@ -1,0 +1,172 @@
+import "abla/bytes"
+import "abla/io"
+import "abla/net"
+import "abla/process/arguments"
+import "abla/process/exit"
+import "abla/process/time"
+import "abla/text"
+
+// Client half of diagnostics/test_http_streaming.sh: validates a running
+// echo server (POST /body) across fragmented input, keep-alive reuse,
+// pipelining under a reader that stops reading, and a closing request.
+//
+//     ablac run diagnostics/http_streaming_check.ab -- <port>
+//
+// Exit status 0 only when every response is exact; any mismatch, timeout or
+// early close prints FAIL and exits 1. It is single threaded: the pipelined
+// phase writes without reading for 250 ms, then alternates short writes and
+// reads, which is what a slow reader looks like to the server.
+
+val PIPELINED_REQUESTS = 256
+val STEP_TIMEOUT_MILLISECONDS = 20000
+
+fun fail(message: string): never {
+    eprintln("FAIL: $message")
+    exit(1)
+}
+
+fun ramp(size: int): string {
+    val buffer = byteBuffer()
+    var index = 0
+    while (index < size) {
+        buffer.appendText(byteEncode(index % 256))
+        index = index + 1
+    }
+    buffer.toText()
+}
+
+fun request(body: string, close: bool): string {
+    val connection = if (close) "close" else "keep-alive"
+    "POST /body HTTP/1.1\r\nHost: localhost\r\nContent-Length: ${body.size}\r\nConnection: $connection\r\n\r\n$body"
+}
+
+class Reader(val connection: TcpConnection, var buffer: string, var position: int)
+
+// Reads the next chunk (waiting at most `wait` milliseconds). Returns false at
+// end of stream; a read error or reset fails the check.
+fun Reader.fill(wait: int): bool {
+    val result = this.connection.readWithTimeoutResult(65536, wait)
+    if (result.failed()) fail("read error ${result.errorCode}")
+    if (result.hasData()) {
+        if (this.position > 0) {
+            this.buffer = this.buffer.slice(this.position, this.buffer.size)
+            this.position = 0
+        }
+        this.buffer = this.buffer + result.bytes
+    }
+    !result.reachedEof()
+}
+
+fun parseLength(head: string): int {
+    val lowered = head.lowercase()
+    val marker = lowered.indexOf("\r\ncontent-length:")
+    if (marker < 0) fail("response has no Content-Length")
+    var index = marker + 17
+    while (index < lowered.size && lowered[index] == 32) index = index + 1
+    var value = 0
+    var digits = 0
+    while (index < lowered.size && lowered[index] >= 48 && lowered[index] <= 57) {
+        value = value * 10 + (lowered[index] - 48)
+        digits = digits + 1
+        index = index + 1
+    }
+    if (digits == 0) fail("unreadable Content-Length")
+    value
+}
+
+// Consumes one complete response when the buffer holds it: true after an exact
+// match, false when more bytes are needed.
+fun Reader.tryResponse(expected: string): bool {
+    val end = this.buffer.indexOf("\r\n\r\n", this.position)
+    if (end < 0) return false
+    val head = this.buffer.slice(this.position, end + 2)
+    if (!head.startsWith("HTTP/1.1 200")) fail("status line is not 200: ${head.slice(0, 20)}")
+    if (parseLength(head) != expected.size) fail("Content-Length ${parseLength(head)} is not ${expected.size}")
+    val bodyStart = end + 4
+    if (this.buffer.size - bodyStart < expected.size) return false
+    if (this.buffer.slice(bodyStart, bodyStart + expected.size) != expected) fail("response body differs from the request body")
+    this.position = bodyStart + expected.size
+    true
+}
+
+fun Reader.response(expected: string): void {
+    val started = monotonicMilliseconds()
+    while (!this.tryResponse(expected)) {
+        if (monotonicMilliseconds() - started > STEP_TIMEOUT_MILLISECONDS) fail("timed out waiting for a response")
+        if (!this.fill(100)) fail("response ended inside headers or body")
+    }
+}
+
+fun send(connection: TcpConnection, text: string): void {
+    val outcome = connection.writeNetwork(text, STEP_TIMEOUT_MILLISECONDS)
+    if (!outcome.succeeded()) fail("write failed or timed out")
+}
+
+fun main: int {
+    if (processArgumentCount() < 1) {
+        eprintln("usage: ablac run diagnostics/http_streaming_check.ab -- <port>")
+        return 2
+    }
+    var port = 0
+    for (digit in processArgument(0)) port = port * 10 + (digit - 48)
+    val connection = tcpConnect(ipv4Loopback(port), 10000)
+    if (connection.descriptor < 0) fail("cannot connect to port $port")
+    val reader = Reader(move(connection), "", 0)
+
+    // Fragmented input with idle gaps inside the header and inside the body.
+    val body = ramp(65536)
+    val encoded = request(body, false)
+    var begin = 0
+    for (end in [17, 1024, 32768, 65536, encoded.size]) {
+        send(reader.connection, encoded.slice(begin, end))
+        begin = end
+        sleep(20)
+    }
+    reader.response(body)
+
+    // A further complete request must work on that same connection.
+    send(reader.connection, request("after-fragments", false))
+    reader.response("after-fragments")
+
+    // Stop reading while pipelining enough data to pressure the output.
+    val payload = ramp(16384)
+    val one = request(payload, false)
+    var queued = 0
+    var pending = ""
+    val started = monotonicMilliseconds()
+    while (monotonicMilliseconds() - started < 250 && (queued < PIPELINED_REQUESTS || pending.size > 0)) {
+        if (pending.size == 0) {
+            pending = one
+            queued = queued + 1
+        }
+        val outcome = reader.connection.writeNetwork(pending, 20)
+        if (outcome.failed()) fail("write failed while the reader was stopped")
+        pending = pending.slice(outcome.written, pending.size)
+    }
+    var received = 0
+    val loopStart = monotonicMilliseconds()
+    while (received < PIPELINED_REQUESTS) {
+        if (monotonicMilliseconds() - loopStart > STEP_TIMEOUT_MILLISECONDS) fail("pipelined responses timed out after $received")
+        val sending = queued < PIPELINED_REQUESTS || pending.size > 0
+        if (sending) {
+            if (pending.size == 0) {
+                pending = one
+                queued = queued + 1
+            }
+            val outcome = reader.connection.writeNetwork(pending, 5)
+            if (outcome.failed()) fail("write failed during pipelining")
+            pending = pending.slice(outcome.written, pending.size)
+        }
+        if (!reader.fill(if (sending) 1 else 50)) fail("connection closed after $received pipelined responses")
+        while (reader.tryResponse(payload)) received = received + 1
+    }
+
+    send(reader.connection, request("final", true))
+    reader.response("final")
+    // The close request ends the connection: nothing more may arrive.
+    if (reader.fill(STEP_TIMEOUT_MILLISECONDS)) fail("connection stayed open after Connection: close")
+    if (reader.position < reader.buffer.size) fail("unexpected bytes after the last response")
+    reader.connection.close()
+    println("PASS fragmented 64 KB body, keep-alive, 256 pipelined responses, slow reader, close")
+    0
+}
