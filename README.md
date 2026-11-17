@@ -40,18 +40,18 @@ it pins the server to isolated physical CPUs and the load generator to the
 remaining CPUs.
 
 ```sh
-nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/6510408d147d8c5e6d76043e899e9251756f6a75.tar.gz -p oha zig --run 'python3 benchmark.py'
+nix-shell -I nixpkgs=https://github.com/NixOS/nixpkgs/archive/6510408d147d8c5e6d76043e899e9251756f6a75.tar.gz -p oha zig jq curl --run ./benchmark.sh
 ```
 
 Raw results are written to `results/latest.json` (ignored by Git). Useful knobs:
 
 ```sh
-python3 benchmark.py --scenario all --connections 64 --duration 10 --repetitions 3
-python3 benchmark.py --scenario context
-python3 benchmark.py --skip-build --server-cpus 2 --client-cpus 8-31
-python3 benchmark.py --workers 4 --connections 256
-python3 benchmark.py --workers 8 --pin-abla-workers --connections 256
-python3 benchmark.py --server zig --workers 8 --zig-event-workers 2 --zig-handler-threads 3
+./benchmark.sh --scenario all --connections 64 --duration 10 --repetitions 3
+./benchmark.sh --scenario context
+./benchmark.sh --skip-build --server-cpus 2 --client-cpus 8-31
+./benchmark.sh --workers 4 --connections 256
+./benchmark.sh --workers 8 --pin-abla-workers --connections 256
+./benchmark.sh --server zig --workers 8 --zig-event-workers 2 --zig-handler-threads 3
 ```
 
 The defaults assume this repository is beside `../ablac`. Set `ABLAC` to use a
@@ -63,10 +63,10 @@ stress diagnostic reverses server order each round, validates exact responses, r
 binary hashes and retains every sample:
 
 ```sh
-python3 diagnostics/compare_stress.py \
+diagnostics/compare_stress.sh \
   --baseline build/abla-stress-baseline --candidate build/abla-stress-candidate \
   --output results/stress.json
-python3 diagnostics/test_http_streaming.py build/abla-stress-candidate
+diagnostics/test_http_streaming.sh build/abla-stress-candidate
 ```
 
 Run the comparison inside the pinned shell above. The diagnostic defaults to
@@ -137,7 +137,7 @@ assigning it a throughput result; candidate and Zig failures still abort.
 - `servers/zig`: httpz with routed handlers and authentication middleware
 - `diagnostics/http_pipeline_memory.ab`: allocation accounting for parse,
   dispatch, and response-framing stages
-- `benchmark.py`: build, validation, CPU isolation, measurements, and JSON output
+- `benchmark.sh` (with `tools/harness.sh`): build, validation, CPU isolation, measurements, and JSON output; the other scripts in `diagnostics/` and `servers/go/test_keepalive_echo.sh` reuse the harness. The repository has no Python: shell with `jq`, `curl`, `taskset` and `oha`, plus Abla for the socket-level HTTP streaming check
 
 ## Current baseline
 
@@ -390,7 +390,7 @@ pooled percentile. Small differences remain sensitive to desktop noise.
 [Final samples](results/2026-10-20-asm-final.json),
 [regression samples](results/2026-10-20-asm-regression.json), and
 [validation and profiling evidence](results/2026-10-20-asm-validation.json)
-include binary hashes and the exact configuration. `diagnostics/profile_json.py`
+include binary hashes and the exact configuration. `diagnostics/profile_json.sh`
 collects server-only user-space counters on one P-core with 64 connections,
 attaching to every existing server thread. Counters and cycle samples use
 separate five-second loads; start/stop windows are approximate. They exclude
