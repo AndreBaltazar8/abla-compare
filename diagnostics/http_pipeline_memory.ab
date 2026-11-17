@@ -2,6 +2,7 @@ import github("AndreBaltazar8/abla-web")
 import "abla/http/event"
 import "abla/io"
 import "abla/memory"
+import "abla/http"
 
 fun diagnosticPlaintext(context: WebContext): HttpResponse =
     httpText("hello, world!\n")
